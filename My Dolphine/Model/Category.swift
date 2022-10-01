@@ -1,29 +1,31 @@
 //
-//  Task.swift
+//  Category.swift
 //  My Dolphine
 //
-//  Created by Parth Antala on 2022-09-30.
+//  Created by Parth Antala on 2022-10-01.
 //
 
 import Foundation
 import Firebase
 
-struct Task{
+struct Category {
     
     let ref: DatabaseReference?
     let key: String
-    var name: String
-    var quantity: Int
-    var comment: String
     var category: String
+    var emoji: String
+    var cardNumber: Int
+    var counter: Int
     
-    init(name: String, quantity: Int, comment: String, category: String, key: String = ""){
+    init(category: String, emoji: String, cardNumber: Int, counter: Int, key:String = "") {
+        
         self.ref = nil
         self.key = key
-        self.name = name
-        self.quantity = quantity
-        self.comment = comment
         self.category = category
+        self.emoji = emoji
+        self.cardNumber = cardNumber
+        self.counter = counter
+        
     }
     
     init?(snapshot: DataSnapshot) {
@@ -31,10 +33,10 @@ struct Task{
         
         guard
             let value = snapshot.value as? [String: AnyObject],
-            let name = value["name"] as? String,
-            let quantity = value["quantity"] as? Int,
-            let comment = value["comment"] as? String,
-            let category = value["category"] as? String
+            let category = value["category"] as? String,
+            let emoji = value["emoji"] as? String,
+            let cardNumber = value["cardNumber"] as? Int,
+            let counter = value["counter"] as? Int
         else {
             return nil
         }
@@ -42,18 +44,19 @@ struct Task{
         //MARK: - Read items from online and set them within our app as grocery items
         self.ref = snapshot.ref
         self.key = snapshot.key
-        self.name = name
-        self.comment = comment
-        self.quantity = quantity
         self.category = category
+        self.emoji = emoji
+        self.cardNumber = cardNumber
+        self.counter = counter
+    
     }
     
     func toAnyObject() -> Any {
         return [
-            "name": name,
-            "comment": comment,
-            "quantity": quantity,
-            "category": category
+            "category": category,
+            "emoji": emoji,
+            "cardNumber": cardNumber,
+            "counter": counter
         ]
     }
 }
