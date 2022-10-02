@@ -236,12 +236,43 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
         cell.itemQuantity.text = "\(groceryItem.quantity)"
-        
-     //   toggleCellCheckBox(cell, isCompleted: groceryItem.completed)
-
+        if groceryItem.done {
+            cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
+        } else {
+            cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
+        }
+        cell.categoryLabel.text = groceryItem.category
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) else {
+            return
+        }
+        let item = items[indexPath.row]
+        let toggleCompletion = !item.done
+        
+        item.ref?.updateChildValues(["done" : toggleCompletion])
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        // Return false if you do not want the specified item to be editable.
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+      if editingStyle == .delete {
+        print("Deleted")
+          guard let cell = tableView.cellForRow(at: indexPath) else {
+              return
+          }
+          
+          let item = items[indexPath.row]
+          item.ref?.removeValue()
+        
+      }
+    }
+  
     
 }
 extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSource{

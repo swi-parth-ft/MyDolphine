@@ -16,14 +16,16 @@ struct Task{
     var quantity: Int
     var comment: String
     var category: String
+    var done: Bool
     
-    init(name: String, quantity: Int, comment: String, category: String, key: String = ""){
+    init(name: String, quantity: Int, comment: String, category: String, done: Bool, key: String = ""){
         self.ref = nil
         self.key = key
         self.name = name
         self.quantity = quantity
         self.comment = comment
         self.category = category
+        self.done = done
     }
     
     init?(snapshot: DataSnapshot) {
@@ -34,7 +36,8 @@ struct Task{
             let name = value["name"] as? String,
             let quantity = value["quantity"] as? Int,
             let comment = value["comment"] as? String,
-            let category = value["category"] as? String
+            let category = value["category"] as? String,
+            let done = value["done"] as? Bool
         else {
             return nil
         }
@@ -46,6 +49,7 @@ struct Task{
         self.comment = comment
         self.quantity = quantity
         self.category = category
+        self.done = done
     }
     
     func toAnyObject() -> Any {
@@ -53,7 +57,8 @@ struct Task{
             "name": name,
             "comment": comment,
             "quantity": quantity,
-            "category": category
+            "category": category,
+            "done": done
         ]
     }
 }

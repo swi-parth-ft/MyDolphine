@@ -44,7 +44,7 @@ class AddTaskViewController: UIViewController {
         
       
        
-        let item = Task(name: name, quantity: quantity, comment: "demo comment", category: selectedCategory)
+        let item = Task(name: name, quantity: quantity, comment: "demo comment", category: selectedCategory, done: false)
         
         //MARK: - Ref to snapshot of grocery list
         let itemRef = self.ref.child(name.lowercased())
