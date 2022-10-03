@@ -33,6 +33,7 @@
 		07D604F728E88A7800AD539D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07D604F628E88A7800AD539D /* GoogleService-Info.plist */; };
 		07D604FD28E8A45B00AD539D /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D604FC28E8A45B00AD539D /* CollectionViewCell.swift */; };
 		07DC1A4228E8CFD800B32D43 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DC1A4128E8CFD800B32D43 /* Category.swift */; };
+		07DC1A4528EB334E00B32D43 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DC1A4428EB334E00B32D43 /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		07D604F628E88A7800AD539D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		07D604FC28E8A45B00AD539D /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		07DC1A4128E8CFD800B32D43 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		07DC1A4428EB334E00B32D43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 			children = (
 				07D604F228E79FC900AD539D /* Task.swift */,
 				07DC1A4128E8CFD800B32D43 /* Category.swift */,
+				07DC1A4428EB334E00B32D43 /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 				07AC05CE28E78D12006AD37F /* ViewController.swift in Sources */,
 				07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */,
 				07D604F528E8850E00AD539D /* SignUpViewController.swift in Sources */,
+				07DC1A4528EB334E00B32D43 /* User.swift in Sources */,
 				07AC05CC28E78D12006AD37F /* SceneDelegate.swift in Sources */,
 				07D604F128E79F1C00AD539D /* AddTaskViewController.swift in Sources */,
 				07DC1A4228E8CFD800B32D43 /* Category.swift in Sources */,

@@ -21,8 +21,12 @@ class AddTaskViewController: UIViewController {
     var item: [Task] = []
     
     let ref = Database.database().reference(withPath: "items")
+    let usersRef = Database.database().reference(withPath: "online")
+    
     var refObservers: [DatabaseHandle] = []
     var handle: AuthStateDidChangeListenerHandle?
+    
+    var user: User!
     
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var categoryPicker: UIPickerView!
@@ -34,6 +38,18 @@ class AddTaskViewController: UIViewController {
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
         // Do any additional setup after loading the view.
+        
+        
+        Auth.auth().addStateDidChangeListener { auth, user in
+            //MARK: - Listen for online users, set currently logged in user
+            guard let user = user else { return }
+            self.user = User(authData: user)
+        
+            let currentUserRef = self.usersRef.child(self.user.uid)
+            currentUserRef.setValue(self.user.email)
+            currentUserRef.onDisconnectRemoveValue()
+        }
+
     }
     
 
@@ -44,7 +60,7 @@ class AddTaskViewController: UIViewController {
         
       
        
-        let item = Task(name: name, quantity: quantity, comment: "demo comment", category: selectedCategory, done: false)
+        let item = Task(name: name, quantity: quantity, comment: "demo comment", category: selectedCategory, done: false, addedByUser: self.user.uid)
         
         //MARK: - Ref to snapshot of grocery list
         let itemRef = self.ref.child(name.lowercased())
@@ -52,7 +68,7 @@ class AddTaskViewController: UIViewController {
         itemRef.setValue(item.toAnyObject())
         
         
-        navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true)
     }
   
 

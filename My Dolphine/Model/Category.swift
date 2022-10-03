@@ -16,8 +16,9 @@ struct Category {
     var emoji: String
     var cardNumber: Int
     var counter: Int
+    let addedByUser: String
     
-    init(category: String, emoji: String, cardNumber: Int, counter: Int, key:String = "") {
+    init(category: String, emoji: String, cardNumber: Int, counter: Int, addedByUser: String, key:String = "") {
         
         self.ref = nil
         self.key = key
@@ -25,7 +26,7 @@ struct Category {
         self.emoji = emoji
         self.cardNumber = cardNumber
         self.counter = counter
-        
+        self.addedByUser = addedByUser
     }
     
     init?(snapshot: DataSnapshot) {
@@ -36,7 +37,8 @@ struct Category {
             let category = value["category"] as? String,
             let emoji = value["emoji"] as? String,
             let cardNumber = value["cardNumber"] as? Int,
-            let counter = value["counter"] as? Int
+            let counter = value["counter"] as? Int,
+            let addedByUser = value["addedByUser"] as? String
         else {
             return nil
         }
@@ -48,6 +50,7 @@ struct Category {
         self.emoji = emoji
         self.cardNumber = cardNumber
         self.counter = counter
+        self.addedByUser = addedByUser
     
     }
     
@@ -56,7 +59,8 @@ struct Category {
             "category": category,
             "emoji": emoji,
             "cardNumber": cardNumber,
-            "counter": counter
+            "counter": counter,
+            "addedByUser": addedByUser
         ]
     }
 }

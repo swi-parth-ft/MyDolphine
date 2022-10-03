@@ -21,7 +21,7 @@ class ListsViewController: UIViewController, selectedCategories {
         selectedCategory = category
     }
     
-    
+    var user: User!
     
     @IBOutlet weak var CategoriesCollection: UICollectionView!
     var imageArray = [UIImage(named: "workToDoImage"),UIImage(named: "workToDoImage"),UIImage(named: "workToDoImage")]
@@ -32,6 +32,7 @@ class ListsViewController: UIViewController, selectedCategories {
     
     let ref = Database.database().reference(withPath: "items")
     let ref1 = Database.database().reference(withPath: "categories")
+    let usersRef = Database.database().reference(withPath: "online")
     
     var refObservers: [DatabaseHandle] = []
     var handle: AuthStateDidChangeListenerHandle?
@@ -57,12 +58,22 @@ class ListsViewController: UIViewController, selectedCategories {
         
         CategoriesCollection.delegate = self
         CategoriesCollection.dataSource = self
+
+       
+        Auth.auth().addStateDidChangeListener { auth, user in
+            //MARK: - Listen for online users, set currently logged in user
+            guard let user = user else { return }
+            self.user = User(authData: user)
         
-        
-            
+            let currentUserRef = self.usersRef.child(self.user.uid)
+            currentUserRef.setValue(self.user.email)
+            currentUserRef.onDisconnectRemoveValue()
+        }
        
         
     }
+    
+   
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -82,7 +93,9 @@ class ListsViewController: UIViewController, selectedCategories {
                 if let snapshot = child as? DataSnapshot,
                    //MARK: - Create grocery item from downloaded snapshot, add to list
                    let groceryItem = Task(snapshot: snapshot) {
-                    newItems.append(groceryItem)
+                    if groceryItem.addedByUser == self.user.uid{
+                        newItems.append(groceryItem)
+                    }
                 }
             }
             //MARK: - Set items in table to newItems
@@ -133,7 +146,10 @@ class ListsViewController: UIViewController, selectedCategories {
                 if let snapshot = child as? DataSnapshot,
                    //MARK: - Create grocery item from downloaded snapshot, add to list
                    let cat = Category(snapshot: snapshot) {
-                    newCategories.append(cat)
+                    if cat.addedByUser == self.user.uid{
+                        newCategories.append(cat)
+                    }
+                    
                 }
             }
             //MARK: - Set items in table to newItems
@@ -185,7 +201,7 @@ class ListsViewController: UIViewController, selectedCategories {
             }
             
             
-            let category = Category(category: name, emoji: emoji, cardNumber: self.cardCounter, counter: 0)
+            let category = Category(category: name, emoji: emoji, cardNumber: self.cardCounter, counter: 0, addedByUser: self.user.uid)
             
             //MARK: - Ref to snapshot of grocery list
             let categoryRef = self.ref1.child(name.lowercased())
@@ -289,6 +305,53 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+            configureContextMenu(index: indexPath.row)
+        }
+     
+    func configureContextMenu(index: Int) -> UIContextMenuConfiguration{
+        let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
+            
+            let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
+                print("edit button clicked")
+                
+                var emoji = UITextField()
+                var nameField = UITextField()
+                let alert = UIAlertController(title: "Update category", message: "", preferredStyle: .alert)
+                
+                let action = UIAlertAction(title: "Update Category", style: .default) { (action) in
+
+                    let name = nameField.text!
+                    let emoji = emoji.text!
+                    
+                    let cat = self.categories[index]
+                    cat.ref?.updateChildValues(["category" : name])
+                    cat.ref?.updateChildValues(["emoji" : emoji])
+                   
+
+                }
+                alert.addTextField { (alertTextField) in
+                    alertTextField.placeholder = "Name"
+                    nameField = alertTextField
+                }
+                alert.addTextField { (alertTextField) in
+                    alertTextField.placeholder = "Emoji"
+                    emoji = alertTextField
+                }
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+                //add tasks...
+            }
+            let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
+                let cat = self.categories[index]
+                cat.ref?.removeValue()
+                //add tasks...
+            }
+            return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
+        }
+        return context
+    }
+
   
     
     
