@@ -8,7 +8,7 @@
 import UIKit
 import Firebase
 
-class ListsViewController: UIViewController, selectedCategories {
+class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
     var tempCategories:[String] = []
     var tempCategories1:[String] = []
@@ -16,7 +16,7 @@ class ListsViewController: UIViewController, selectedCategories {
     var selectedCategory: String = ""
     var catName: String = ""
     var catEmoji: String = ""
-    
+    var selectedItem: Task?
     func setCategory(category: String) {
         print(category)
         selectedCategory = category
@@ -37,7 +37,7 @@ class ListsViewController: UIViewController, selectedCategories {
     
     var refObservers: [DatabaseHandle] = []
     var handle: AuthStateDidChangeListenerHandle?
-    
+    var longPressGesture: UILongPressGestureRecognizer!
     @IBOutlet weak var tableview: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +57,8 @@ class ListsViewController: UIViewController, selectedCategories {
         tableview.dataSource = self
         tableview.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
         
+        
+          
         CategoriesCollection.delegate = self
         CategoriesCollection.dataSource = self
 
@@ -74,6 +76,8 @@ class ListsViewController: UIViewController, selectedCategories {
        
         
     }
+    
+ 
     
    
     
@@ -95,13 +99,18 @@ class ListsViewController: UIViewController, selectedCategories {
                 if let snapshot = child as? DataSnapshot,
                    //MARK: - Create grocery item from downloaded snapshot, add to list
                    let groceryItem = Task(snapshot: snapshot) {
+                    print("----------------------item--------item---------------------------------")
+                    print(groceryItem)
+                    print("----------------------item----------item-------------------------------")
                     if groceryItem.addedByUser == self.user.uid{
+                       
                         newItems.append(groceryItem)
                     }
                 }
             }
             //MARK: - Set items in table to newItems
             self.items = newItems
+           
             self.tableview.reloadData()
             for item in self.items {
                 self.tempCategories.append(item.category)
@@ -240,6 +249,11 @@ class ListsViewController: UIViewController, selectedCategories {
             vc1.catName = catName
             vc1.catEmoji = catEmoji
         }
+        else if let vc2 = segue.destination as? EditViewController {
+            let indexPath = tableview.indexPathForSelectedRow
+            vc2.selectedItem = selectedItem
+            vc2.categories = categories
+        }
     }
     
     @IBAction func logoutClicked(_ sender: Any) {
@@ -305,7 +319,28 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         
       }
     }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        configureTableContextMenu(index: indexPath.row)
+    }
   
+    func configureTableContextMenu(index: Int) -> UIContextMenuConfiguration{
+        let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
+            
+            let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
+                print("edit button clicked")
+                self.selectedItem = self.items[index]
+                self.performSegue(withIdentifier: "updateItem", sender: self)
+            }
+            let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
+                let cat = self.categories[index]
+                cat.ref?.removeValue()
+                //add tasks...
+            }
+            return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
+        }
+        return context
+    }
     
 }
 extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSource{

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0794C7AB28EB6C20001C81FC /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0794C7AA28EB6C20001C81FC /* EditViewController.swift */; };
 		07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AC05C928E78D12006AD37F /* AppDelegate.swift */; };
 		07AC05CC28E78D12006AD37F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AC05CB28E78D12006AD37F /* SceneDelegate.swift */; };
 		07AC05CE28E78D12006AD37F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AC05CD28E78D12006AD37F /* ViewController.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0794C7AA28EB6C20001C81FC /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		07AC05C628E78D12006AD37F /* My Dolphine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Dolphine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07AC05C928E78D12006AD37F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		07AC05CB28E78D12006AD37F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				07D604F028E79F1C00AD539D /* AddTaskViewController.swift */,
 				07D604F428E8850E00AD539D /* SignUpViewController.swift */,
 				07DC1A4628EB423300B32D43 /* CategoryItemViewController.swift */,
+				0794C7AA28EB6C20001C81FC /* EditViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				07AC05D428E78D12006AD37F /* My_Dolphine.xcdatamodeld in Sources */,
 				07DC1A4728EB423300B32D43 /* CategoryItemViewController.swift in Sources */,
 				07D604EF28E79CC300AD539D /* ListsViewController.swift in Sources */,
+				0794C7AB28EB6C20001C81FC /* EditViewController.swift in Sources */,
 				07AC05CE28E78D12006AD37F /* ViewController.swift in Sources */,
 				07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */,
 				07D604F528E8850E00AD539D /* SignUpViewController.swift in Sources */,
