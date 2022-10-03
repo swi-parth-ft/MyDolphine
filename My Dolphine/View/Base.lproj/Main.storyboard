@@ -300,16 +300,54 @@
                             <constraint firstItem="PKZ-2L-msS" firstAttribute="trailing" secondItem="E2W-kO-ib5" secondAttribute="trailing" constant="20" id="s7X-T6-BWb"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="UR4-D3-dLw"/>
+                    <navigationItem key="navigationItem" id="UR4-D3-dLw">
+                        <barButtonItem key="rightBarButtonItem" title="Log out" id="TKR-sC-52A">
+                            <connections>
+                                <action selector="logoutClicked:" destination="QHY-vW-z8A" id="K2V-Y2-ZDy"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="CategoriesCollection" destination="gcA-RQ-EgR" id="YAQ-JO-kjQ"/>
                         <outlet property="tableview" destination="J0j-d6-6DU" id="yw3-Ga-7wA"/>
                         <segue destination="i95-4h-IDp" kind="push" identifier="toAddToDo" id="Opq-Fz-iVl"/>
+                        <segue destination="AkG-P7-Thj" kind="push" identifier="categoryItemsVC" id="vQ0-38-bKA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zZL-Wu-gx1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2626.7175572519081" y="-2.1126760563380285"/>
+        </scene>
+        <!--Category-->
+        <scene sceneID="3YA-CH-k60">
+            <objects>
+                <viewController title="Category" id="AkG-P7-Thj" customClass="CategoryItemViewController" customModule="My_Dolphine" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="vYl-24-rje">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="sfk-1b-DmI">
+                                <rect key="frame" x="20" y="103" width="353" height="715"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Pne-Ao-fRg"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Pne-Ao-fRg" firstAttribute="trailing" secondItem="sfk-1b-DmI" secondAttribute="trailing" constant="20" id="a0b-5n-bpG"/>
+                            <constraint firstItem="sfk-1b-DmI" firstAttribute="top" secondItem="Pne-Ao-fRg" secondAttribute="top" id="aPZ-96-2Fk"/>
+                            <constraint firstItem="Pne-Ao-fRg" firstAttribute="bottom" secondItem="sfk-1b-DmI" secondAttribute="bottom" id="eVx-Ru-OKW"/>
+                            <constraint firstItem="sfk-1b-DmI" firstAttribute="leading" secondItem="Pne-Ao-fRg" secondAttribute="leading" constant="20" id="eXz-FK-Mm9"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Category" id="vtu-Hg-QtY"/>
+                    <connections>
+                        <outlet property="tableView" destination="sfk-1b-DmI" id="DZu-GY-9sq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1lz-BB-WpP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2627" y="713"/>
         </scene>
         <!--Add Task View Controller-->
         <scene sceneID="BXY-UT-b0P">

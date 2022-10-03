@@ -14,7 +14,8 @@ class ListsViewController: UIViewController, selectedCategories {
     var tempCategories1:[String] = []
     var cardCounter = 1
     var selectedCategory: String = ""
-    
+    var catName: String = ""
+    var catEmoji: String = ""
     
     func setCategory(category: String) {
         print(category)
@@ -59,6 +60,7 @@ class ListsViewController: UIViewController, selectedCategories {
         CategoriesCollection.delegate = self
         CategoriesCollection.dataSource = self
 
+        navigationItem.hidesBackButton = true
        
         Auth.auth().addStateDidChangeListener { auth, user in
             //MARK: - Listen for online users, set currently logged in user
@@ -230,11 +232,26 @@ class ListsViewController: UIViewController, selectedCategories {
         performSegue(withIdentifier: "toAddToDo", sender: self)
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let vc = segue.destination as! AddTaskViewController
-        vc.categories = categories
-        vc.delegate = self
+        if let vc = segue.destination as? AddTaskViewController{
+            vc.categories = categories
+            vc.delegate = self
+        }
+        else if let vc1 = segue.destination as? CategoryItemViewController {
+            vc1.catName = catName
+            vc1.catEmoji = catEmoji
+        }
     }
-
+    
+    @IBAction func logoutClicked(_ sender: Any) {
+        let firebaseAuth = Auth.auth()
+        do {
+          try firebaseAuth.signOut()
+            self.navigationController?.popToRootViewController(animated: true)
+        } catch let signOutError as NSError {
+          print("Error signing out: %@", signOutError)
+        }
+    }
+    
 }
 
 extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
@@ -304,6 +321,16 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
         cell.counter.text = "\(categories[indexPath.row].counter)"
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath)
+        let cat = categories[indexPath.row]
+        catName = cat.category
+        catEmoji = cat.emoji
+        performSegue(withIdentifier: "categoryItemsVC", sender: self)
+    }
+    
+  
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
             configureContextMenu(index: indexPath.row)

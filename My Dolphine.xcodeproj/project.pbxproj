@@ -34,6 +34,7 @@
 		07D604FD28E8A45B00AD539D /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D604FC28E8A45B00AD539D /* CollectionViewCell.swift */; };
 		07DC1A4228E8CFD800B32D43 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DC1A4128E8CFD800B32D43 /* Category.swift */; };
 		07DC1A4528EB334E00B32D43 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DC1A4428EB334E00B32D43 /* User.swift */; };
+		07DC1A4728EB423300B32D43 /* CategoryItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DC1A4628EB423300B32D43 /* CategoryItemViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		07D604FC28E8A45B00AD539D /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		07DC1A4128E8CFD800B32D43 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		07DC1A4428EB334E00B32D43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		07DC1A4628EB423300B32D43 /* CategoryItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryItemViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 				07D604EE28E79CC300AD539D /* ListsViewController.swift */,
 				07D604F028E79F1C00AD539D /* AddTaskViewController.swift */,
 				07D604F428E8850E00AD539D /* SignUpViewController.swift */,
+				07DC1A4628EB423300B32D43 /* CategoryItemViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -236,6 +239,7 @@
 				07D604F328E79FC900AD539D /* Task.swift in Sources */,
 				07D604EC28E7990500AD539D /* TableViewCell.swift in Sources */,
 				07AC05D428E78D12006AD37F /* My_Dolphine.xcdatamodeld in Sources */,
+				07DC1A4728EB423300B32D43 /* CategoryItemViewController.swift in Sources */,
 				07D604EF28E79CC300AD539D /* ListsViewController.swift in Sources */,
 				07AC05CE28E78D12006AD37F /* ViewController.swift in Sources */,
 				07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */,
