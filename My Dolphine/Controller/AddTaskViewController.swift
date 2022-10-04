@@ -28,6 +28,8 @@ class AddTaskViewController: UIViewController {
     
     var user: User!
     
+    
+    @IBOutlet weak var stepper: UIStepper!
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var categoryPicker: UIPickerView!
     @IBOutlet weak var quantityText: UITextField!
@@ -52,23 +54,46 @@ class AddTaskViewController: UIViewController {
 
     }
     
-
+    override func viewDidAppear(_ animated: Bool) {
+        
+        categoryPicker.selectRow(0, inComponent: 0, animated: true)
+    }
+    
+    
+    @IBAction func stepperTapped(_ sender: Any) {
+        quantityText.text = "\(Int(stepper.value))"
+    }
     
     @IBAction func saveClicked(_ sender: Any) {
-        let name = nameText.text ?? "item"
-        let quantity = Int(quantityText.text ?? "0") ?? 0
-        
-      
-       
-        let item = Task(name: name, quantity: quantity, comment: "demo comment", category: selectedCategory, done: false, addedByUser: self.user.uid)
-        
-        //MARK: - Ref to snapshot of grocery list
-        let itemRef = self.ref.child(name.lowercased())
-        
-        itemRef.setValue(item.toAnyObject())
-        
-        
-        self.dismiss(animated: true)
+        if selectedCategory == ""{
+            print("aefeafaefaff\(selectedCategory)")
+
+            
+            let refreshAlert = UIAlertController(title: "Select Caregory", message: "Please select category for your item.", preferredStyle: UIAlertController.Style.alert)
+           
+            refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                        print("Handle Cancel Logic here")
+                        refreshAlert .dismiss(animated: true, completion: nil)
+               }))
+
+                self.present(refreshAlert, animated: true, completion: nil)
+        } else {
+            let name = nameText.text ?? "item"
+            let quantity = Int(quantityText.text ?? "0") ?? 0
+            
+            
+            
+            let item = Task(name: name, quantity: quantity, comment: "demo comment", category: selectedCategory, done: false, addedByUser: self.user.uid)
+            
+            //MARK: - Ref to snapshot of grocery list
+            let itemRef = self.ref.child(name.lowercased())
+            
+            itemRef.setValue(item.toAnyObject())
+            
+            
+            
+            self.navigationController?.popViewController(animated: true)
+        }
     }
   
 

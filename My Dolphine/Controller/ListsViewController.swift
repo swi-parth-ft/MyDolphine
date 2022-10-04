@@ -10,6 +10,7 @@ import Firebase
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
+    var active = true
     var tempCategories:[String] = []
     var tempCategories1:[String] = []
     var cardCounter = 1
@@ -48,22 +49,26 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         addButton.setImage(UIImage(named: "addToDo"), for: .normal)
         self.view.addSubview(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
-        addButton.topAnchor.constraint(greaterThanOrEqualToSystemSpacingBelow: view.topAnchor, multiplier: 80).isActive = true
+        addButton.topAnchor.constraint(greaterThanOrEqualToSystemSpacingBelow: view.topAnchor, multiplier: 50).isActive = true
         addButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
-        addButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -50).isActive = true
+        addButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
         addButton.addTarget(self, action: #selector(toAddToDo), for: .touchUpInside)
         
         tableview.delegate = self
         tableview.dataSource = self
         tableview.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
-        
+        tableview.backgroundColor = UIColor.systemGray6
         
           
+        
+        
         CategoriesCollection.delegate = self
         CategoriesCollection.dataSource = self
 
         navigationItem.hidesBackButton = true
        
+        
+        
         Auth.auth().addStateDidChangeListener { auth, user in
             //MARK: - Listen for online users, set currently logged in user
             guard let user = user else { return }
@@ -77,111 +82,148 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         
     }
     
- 
+    func authenticateUser(){
+        
+//        if Auth.auth().currentUser == nil {
+//            DispatchQueue.main.async {
+//                self.active = false
+////                let vc = storyboard!.instantiateViewController(withIdentifier: "tabBarVC")
+////                UIApplication.shared.window.first?.rootViewController = vc
+////                let viewController = mainStoryboard.instantiateViewController(withIdentifier: "tabBarcontroller") as! ViewController
+////                UIApplication.shared.windows.first?.rootViewController = viewController
+////                UIApplication.shared.windows.first?.makeKeyAndVisible()
+//                let navController = UINavigationController(rootViewController: ViewController())
+//               // self.present(navController, animated: true, completion: nil)
+//              self.navigationController?.popToRootViewController(animated: true)
+//            }
+//        }
+//        else {
+//            active = true
+//        }
+    }
     
-   
+    override func viewDidAppear(_ animated: Bool) {
+//        if Auth.auth().currentUser == nil {
+//
+//                self.active = false
+//                let navController = UINavigationController(rootViewController: ViewController())
+//               self.present(navController, animated: true, completion: nil)
+//              self.navigationController?.popToRootViewController(animated: true)
+//
+//        }
+//        else {
+//            active = true
+//        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        ref.observe(.value, with: { snapshot in
-            print("-------------")
-            print(self.selectedCategory)
-            print(snapshot.value as Any)
-            print("-------------")
-        })
-
-        //MARK: - Download grocery items from database
-        ref.queryOrdered(byChild: "completed").observe(.value, with: { snapshot in
-            //MARK: - Populate a list of grocery items to download
-            var newItems: [Task] = []
-            for child in snapshot.children {
-                //MARK: - Create snapshot which will be a child of all of our snapshots
-                if let snapshot = child as? DataSnapshot,
-                   //MARK: - Create grocery item from downloaded snapshot, add to list
-                   let groceryItem = Task(snapshot: snapshot) {
-                    print("----------------------item--------item---------------------------------")
-                    print(groceryItem)
-                    print("----------------------item----------item-------------------------------")
-                    if groceryItem.addedByUser == self.user.uid{
-                       
-                        newItems.append(groceryItem)
+        
+        authenticateUser()
+        
+       
+        
+        if active {
+            navigationController?.navigationBar.prefersLargeTitles = false
+            ref.observe(.value, with: { snapshot in
+                print("-------------")
+                print(self.selectedCategory)
+                print(snapshot.value as Any)
+                print("-------------")
+            })
+            
+            //MARK: - Download grocery items from database
+            ref.queryOrdered(byChild: "completed").observe(.value, with: { snapshot in
+                //MARK: - Populate a list of grocery items to download
+                var newItems: [Task] = []
+                for child in snapshot.children {
+                    //MARK: - Create snapshot which will be a child of all of our snapshots
+                    if let snapshot = child as? DataSnapshot,
+                       //MARK: - Create grocery item from downloaded snapshot, add to list
+                       let groceryItem = Task(snapshot: snapshot) {
+                        print("----------------------item--------item---------------------------------")
+                        print(groceryItem)
+                        print("----------------------item----------item-------------------------------")
+                        if groceryItem.addedByUser == self.user.uid{
+                            
+                            newItems.append(groceryItem)
+                        }
                     }
                 }
-            }
-            //MARK: - Set items in table to newItems
-            self.items = newItems
-           
-            self.tableview.reloadData()
-            for item in self.items {
-                self.tempCategories.append(item.category)
-                print("----------------------item------------------------------------------")
+                //MARK: - Set items in table to newItems
+                self.items = newItems
+                
+                self.tableview.reloadData()
+                for item in self.items {
+                    self.tempCategories.append(item.category)
+                    print("----------------------item------------------------------------------")
+                    print(self.tempCategories)
+                    print(item.category)
+                    print("-------------------------item---------------------------------------")
+                }
+                
+                print("cat 1\(self.tempCategories1)")
                 print(self.tempCategories)
-                print(item.category)
-                print("-------------------------item---------------------------------------")
-            }
-            
-            print("cat 1\(self.tempCategories1)")
-            print(self.tempCategories)
-            
-            for category in self.categories {
-                var count = 0
-                for tempCategory in self.tempCategories {
-                    if category.category == tempCategory {
-                      
-                        count += 1
-                        category.ref?.updateChildValues(["counter" : count])
+                
+                for category in self.categories {
+                    var count = 0
+                    for tempCategory in self.tempCategories {
+                        if category.category == tempCategory {
+                            
+                            count += 1
+                            category.ref?.updateChildValues(["counter" : count])
+                        }
+                        
                     }
-            
                 }
-            }
-            self.tempCategories = []
-            self.tempCategories1 = []
-          
-        })
-        
-        ref1.observe(.value, with: { snapshot in
-            print("*********************")
-            print(self.selectedCategory)
-          print(snapshot.value as Any)
-            print("*********************")
+                self.tempCategories = []
+                self.tempCategories1 = []
+                
+            })
             
+            ref1.observe(.value, with: { snapshot in
+                print("*********************")
+                print(self.selectedCategory)
+                print(snapshot.value as Any)
+                print("*********************")
+                
+                
+            })
             
-        })
-
-        //MARK: - Download grocery items from database
-        ref1.queryOrdered(byChild: "completed").observe(.value, with: { snapshot in
-            //MARK: - Populate a list of grocery items to download
-            var newCategories: [Category] = []
-            for child in snapshot.children {
-                //MARK: - Create snapshot which will be a child of all of our snapshots
-                if let snapshot = child as? DataSnapshot,
-                   //MARK: - Create grocery item from downloaded snapshot, add to list
-                   let cat = Category(snapshot: snapshot) {
-                    if cat.addedByUser == self.user.uid{
-                        newCategories.append(cat)
+            //MARK: - Download grocery items from database
+            ref1.queryOrdered(byChild: "completed").observe(.value, with: { snapshot in
+                //MARK: - Populate a list of grocery items to download
+                var newCategories: [Category] = []
+                for child in snapshot.children {
+                    //MARK: - Create snapshot which will be a child of all of our snapshots
+                    if let snapshot = child as? DataSnapshot,
+                       //MARK: - Create grocery item from downloaded snapshot, add to list
+                       let cat = Category(snapshot: snapshot) {
+                        if cat.addedByUser == self.user.uid{
+                            newCategories.append(cat)
+                        }
+                        
                     }
-                    
                 }
-            }
-            //MARK: - Set items in table to newItems
-            self.categories = newCategories
-            self.CategoriesCollection.reloadData()
-            print("**************eeeee**")
-            print(newCategories)
-            print("*************eeeee***")
-           
-           
+                //MARK: - Set items in table to newItems
+                self.categories = newCategories
+                self.CategoriesCollection.reloadData()
+                print("**************eeeee**")
+                print(newCategories)
+                print("*************eeeee***")
+                
+                
+                
+                for category in self.categories {
+                    self.tempCategories1.append(category.category)
+                    print("--------------------category--------------------------------------------")
+                    print(category.category)
+                    print("-----------------------category-----------------------------------------")
+                }
+                
+            })
             
-            for category in self.categories {
-                self.tempCategories1.append(category.category)
-                print("--------------------category--------------------------------------------")
-                print(category.category)
-                print("-----------------------category-----------------------------------------")
-            }
-            
-        })
-        
-        
+        }
        
         
     }
@@ -197,6 +239,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     @IBAction func addNewCategoryClicked(_ sender: Any) {
         var emoji = UITextField()
         var nameField = UITextField()
+        
         let alert = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert)
 
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
@@ -205,13 +248,13 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             let emoji = emoji.text!
             
             
-            if self.cardCounter <= 3 {
+            if self.cardCounter < 7 {
                 self.cardCounter += 1
             } else {
                 self.cardCounter = 1
             }
             
-            
+            print(self.cardCounter)
             let category = Category(category: name, emoji: emoji, cardNumber: self.cardCounter, counter: 0, addedByUser: self.user.uid)
             
             //MARK: - Ref to snapshot of grocery list
@@ -229,7 +272,13 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             alertTextField.placeholder = "Emoji"
             emoji = alertTextField
         }
+        
+        let action1 = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                    print("Handle Cancel Logic here")
+                    alert.dismiss(animated: true, completion: nil)
+           })
         alert.addAction(action)
+        alert.addAction(action1)
         present(alert, animated: true, completion: nil)
     }
     
@@ -264,6 +313,13 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         } catch let signOutError as NSError {
           print("Error signing out: %@", signOutError)
         }
+        
+//        if Auth.auth().currentUser == nil {
+//            DispatchQueue.main.async {
+//                let navController = UINavigationController(rootViewController: ViewController())
+//                self.present(navController, animated: true, completion: nil)
+//            }
+//        }
     }
     
 }
@@ -285,10 +341,27 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         cell.itemQuantity.text = "\(groceryItem.quantity)"
         if groceryItem.done {
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
+            cell.itemName.textColor = UIColor.gray
+            cell.itemQuantity.textColor = UIColor.gray
         } else {
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
+            cell.itemName.textColor = UIColor.init(named: "LabelColor")
+            cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
         }
-        cell.categoryLabel.text = groceryItem.category
+        
+        for cats in categories{
+            
+            if groceryItem.category == cats.category {
+                if cats.emoji != "" {
+                    cell.categoryLabel.text = cats.emoji
+                }
+                else{
+                    cell.categoryLabel.text = groceryItem.category
+                }
+            }
+        
+        }
+        
         return cell
     }
     
@@ -298,9 +371,10 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         }
         let item = items[indexPath.row]
         let toggleCompletion = !item.done
-        
         item.ref?.updateChildValues(["done" : toggleCompletion])
     }
+    
+    
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
@@ -316,7 +390,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
           
           let item = items[indexPath.row]
           item.ref?.removeValue()
-        
+          CategoriesCollection.reloadData()
       }
     }
     
@@ -333,8 +407,8 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
                 self.performSegue(withIdentifier: "updateItem", sender: self)
             }
             let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
-                let cat = self.categories[index]
-                cat.ref?.removeValue()
+                let item = self.items[index]
+                item.ref?.removeValue()
                 //add tasks...
             }
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
@@ -379,10 +453,15 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 
                 var emoji = UITextField()
                 var nameField = UITextField()
+                
+               
+                
                 let alert = UIAlertController(title: "Update category", message: "", preferredStyle: .alert)
                 
                 let action = UIAlertAction(title: "Update Category", style: .default) { (action) in
 
+                    
+                    
                     let name = nameField.text!
                     let emoji = emoji.text!
                     
@@ -394,10 +473,13 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 }
                 alert.addTextField { (alertTextField) in
                     alertTextField.placeholder = "Name"
+                    alertTextField.text = self.categories[index].category
+                    
                     nameField = alertTextField
                 }
                 alert.addTextField { (alertTextField) in
                     alertTextField.placeholder = "Emoji"
+                    alertTextField.text = self.categories[index].emoji
                     emoji = alertTextField
                 }
                 alert.addAction(action)

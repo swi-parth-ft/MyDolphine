@@ -14,10 +14,12 @@ class EditViewController: UIViewController {
     var selectedItem: Task?
     var user: User?
     var categories: [Category] = []
+    var cats: [String] = []
     @IBOutlet weak var categoryPicker: UIPickerView!
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var quantityText: UITextField!
     
+    @IBOutlet weak var stepper: UIStepper!
     let ref = Database.database().reference(withPath: "items")
     let usersRef = Database.database().reference(withPath: "online")
     var refObservers: [DatabaseHandle] = []
@@ -25,8 +27,14 @@ class EditViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(selectedItem)
-        print(categories)
+        
+        nameText.text = selectedItem?.name
+        quantityText.text = "\(selectedItem?.quantity ?? 0)"
+        
+        for category in categories {
+            cats.append(category.category)
+        }
+        
         
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
@@ -44,6 +52,18 @@ class EditViewController: UIViewController {
     }
     
 
+    override func viewDidAppear(_ animated: Bool) {
+        print(cats)
+        let i1 = cats.firstIndex(where: {$0 == selectedItem!.category})
+        print(i1!)
+        categoryPicker.selectRow(i1!, inComponent: 0, animated: true)
+    }
+    
+    @IBAction func stepperTapped(_ sender: Any) {
+        quantityText.text = "\(Int(stepper.value))"
+    }
+    
+    
     @IBAction func updateClicked(_ sender: Any) {
         
         let name = nameText.text
@@ -54,6 +74,9 @@ class EditViewController: UIViewController {
         selectedItem?.ref?.updateChildValues(["name" : name])
         selectedItem?.ref?.updateChildValues(["quantity" : quantity])
         selectedItem?.ref?.updateChildValues(["category" : newCategory])
+        
+        self.navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true)
     }
 }
 

@@ -25,6 +25,9 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         // Do any additional setup after loading the view.
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = UIColor.systemGray6
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
         self.title = "\(catName) \(catEmoji)"
         Auth.auth().addStateDidChangeListener { auth, user in
             //MARK: - Listen for online users, set currently logged in user
@@ -96,10 +99,14 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         cell.itemQuantity.text = "\(groceryItem.quantity)"
         if groceryItem.done {
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
+            cell.itemName.textColor = UIColor.gray
+            cell.itemQuantity.textColor = UIColor.gray
         } else {
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
+            cell.itemName.textColor = UIColor.init(named: "LabelColor")
+            cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
         }
-        cell.categoryLabel.text = groceryItem.category
+        cell.categoryLabel.text = ""
         return cell
     }
     

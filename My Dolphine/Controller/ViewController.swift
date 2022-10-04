@@ -16,16 +16,36 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-     
+        passkeyTextView.isSecureTextEntry = true
+        Auth.auth().addStateDidChangeListener { auth, user in
+                if user != nil{
+                    // User is signed in.
+                    print("User is not logged out.")
+                    DispatchQueue.main.async {
+                        self.performSegue(withIdentifier: "loggedIn", sender: nil)
+                    }
+                    
+                } else {
+                    print("No user is signed in.")
+                }
+            }
+        
     }
 
     @IBAction func loginButtonClicked(_ sender: Any) {
         if let id = homeIDTextView.text, let passkey = passkeyTextView.text {
             Auth.auth().signIn(withEmail: id, password: passkey) { authResult, error in
                 if let e = error {
-                    print(e)
+                    let refreshAlert = UIAlertController(title: "Invalid Credentials", message: "HomeID or Passkey is incorrect.", preferredStyle: UIAlertController.Style.alert)
+                   
+                    refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                                print("Handle Cancel Logic here")
+                                refreshAlert .dismiss(animated: true, completion: nil)
+                       }))
+
+                        self.present(refreshAlert, animated: true, completion: nil)
                 } else {
-                    self.performSegue(withIdentifier: "toHomeView", sender: self)
+                   // self.performSegue(withIdentifier: "loggedIn", sender: self)
                 }
             }
         }
