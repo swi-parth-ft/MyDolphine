@@ -10,7 +10,10 @@ import Firebase
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
-    var active = true
+    let searchController = UISearchController()
+    var FilteredItems: [Task] =  []
+    @IBOutlet weak var searchBar: UISearchBar!
+    var active = false
     var tempCategories:[String] = []
     var tempCategories1:[String] = []
     var cardCounter = 1
@@ -43,6 +46,8 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        searchBar.delegate = self
+        self.hideKeyboardWhenTappedAround() 
         print(selectedCategory)
         
         addButton.setTitle("", for: .normal)
@@ -82,48 +87,13 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         
     }
     
-    func authenticateUser(){
-        
-//        if Auth.auth().currentUser == nil {
-//            DispatchQueue.main.async {
-//                self.active = false
-////                let vc = storyboard!.instantiateViewController(withIdentifier: "tabBarVC")
-////                UIApplication.shared.window.first?.rootViewController = vc
-////                let viewController = mainStoryboard.instantiateViewController(withIdentifier: "tabBarcontroller") as! ViewController
-////                UIApplication.shared.windows.first?.rootViewController = viewController
-////                UIApplication.shared.windows.first?.makeKeyAndVisible()
-//                let navController = UINavigationController(rootViewController: ViewController())
-//               // self.present(navController, animated: true, completion: nil)
-//              self.navigationController?.popToRootViewController(animated: true)
-//            }
-//        }
-//        else {
-//            active = true
-//        }
-    }
+
     
-    override func viewDidAppear(_ animated: Bool) {
-//        if Auth.auth().currentUser == nil {
-//
-//                self.active = false
-//                let navController = UINavigationController(rootViewController: ViewController())
-//               self.present(navController, animated: true, completion: nil)
-//              self.navigationController?.popToRootViewController(animated: true)
-//
-//        }
-//        else {
-//            active = true
-//        }
-    }
+
     
     override func viewWillAppear(_ animated: Bool) {
         
         
-        authenticateUser()
-        
-       
-        
-        if active {
             navigationController?.navigationBar.prefersLargeTitles = false
             ref.observe(.value, with: { snapshot in
                 print("-------------")
@@ -152,7 +122,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 }
                 //MARK: - Set items in table to newItems
                 self.items = newItems
-                
+                self.FilteredItems = self.items
                 self.tableview.reloadData()
                 for item in self.items {
                     self.tempCategories.append(item.category)
@@ -223,7 +193,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 
             })
             
-        }
+        
        
         
     }
@@ -327,14 +297,16 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
 extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(items.count)
-        return items.count
+       // return searchController.isActive ? FilteredItems.count : items.count
+            return FilteredItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ReusableCell", for: indexPath) as! TableViewCell
         
         //MARK: - Each grocery item will fill the table
-        let groceryItem = items[indexPath.row]
+        //let groceryItem = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
+        let groceryItem = FilteredItems[indexPath.row]
         
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
@@ -369,9 +341,11 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         guard let cell = tableView.cellForRow(at: indexPath) else {
             return
         }
-        let item = items[indexPath.row]
+       // let item = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
+        let item = FilteredItems[indexPath.row]
         let toggleCompletion = !item.done
         item.ref?.updateChildValues(["done" : toggleCompletion])
+        print(searchController.isActive)
     }
     
     
@@ -388,7 +362,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
               return
           }
           
-          let item = items[indexPath.row]
+          let item = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
           item.ref?.removeValue()
           CategoriesCollection.reloadData()
       }
@@ -499,4 +473,36 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
   
     
     
+}
+
+extension ListsViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            FilteredItems = items
+            tableview.reloadData()
+        } else {
+            FilteredItems = []
+            FilteredItems = items.filter { $0.name.lowercased().contains(searchText.lowercased()) == true }
+            print(FilteredItems)
+            tableview.reloadData()
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        print("clicked")
+    }
+    
+}
+
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
 }

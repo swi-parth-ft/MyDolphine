@@ -37,6 +37,8 @@ class AddTaskViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.hideKeyboardWhenTappedAround()
+        
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
         // Do any additional setup after loading the view.

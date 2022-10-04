@@ -28,6 +28,8 @@ class EditViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.hideKeyboardWhenTappedAround()
+        
         nameText.text = selectedItem?.name
         quantityText.text = "\(selectedItem?.quantity ?? 0)"
         

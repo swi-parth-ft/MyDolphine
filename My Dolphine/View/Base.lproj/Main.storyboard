@@ -211,7 +211,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="singleLineEtched" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="J0j-d6-6DU">
-                                <rect key="frame" x="20" y="287" width="353" height="531"/>
+                                <rect key="frame" x="20" y="339" width="353" height="479"/>
                             </tableView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="gcA-RQ-EgR">
                                 <rect key="frame" x="20" y="157" width="373" height="110"/>
@@ -293,14 +293,24 @@
                                     <action selector="addNewCategoryClicked:" destination="QHY-vW-z8A" eventType="touchUpInside" id="BpT-Hd-WlR"/>
                                 </connections>
                             </button>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Pjd-vf-rik">
+                                <rect key="frame" x="0.0" y="277" width="393" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="QHY-vW-z8A" id="PF2-XX-2Ba"/>
+                                </connections>
+                            </searchBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="PKZ-2L-msS"/>
                         <color key="backgroundColor" systemColor="systemGray6Color"/>
                         <constraints>
                             <constraint firstItem="gcA-RQ-EgR" firstAttribute="leading" secondItem="PKZ-2L-msS" secondAttribute="leading" constant="20" id="1T4-ch-WeQ"/>
-                            <constraint firstItem="J0j-d6-6DU" firstAttribute="top" secondItem="gcA-RQ-EgR" secondAttribute="bottom" constant="20" id="7Ge-Vg-WeQ"/>
+                            <constraint firstItem="Pjd-vf-rik" firstAttribute="leading" secondItem="PKZ-2L-msS" secondAttribute="leading" id="Dhc-C8-KAc"/>
+                            <constraint firstItem="Pjd-vf-rik" firstAttribute="trailing" secondItem="PKZ-2L-msS" secondAttribute="trailing" id="Ldv-cP-7wN"/>
                             <constraint firstItem="E2W-kO-ib5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cVH-oS-IPH" secondAttribute="trailing" constant="8" symbolic="YES" id="M2h-B4-VMu"/>
+                            <constraint firstItem="Pjd-vf-rik" firstAttribute="top" secondItem="gcA-RQ-EgR" secondAttribute="bottom" constant="10" id="Mix-RG-3f1"/>
                             <constraint firstItem="J0j-d6-6DU" firstAttribute="bottom" secondItem="PKZ-2L-msS" secondAttribute="bottom" id="T3p-YN-j9w"/>
+                            <constraint firstItem="J0j-d6-6DU" firstAttribute="top" secondItem="Pjd-vf-rik" secondAttribute="bottom" constant="6" id="TKs-Bc-0zB"/>
                             <constraint firstItem="cVH-oS-IPH" firstAttribute="leading" secondItem="PKZ-2L-msS" secondAttribute="leading" constant="20" id="UwY-MG-dgk"/>
                             <constraint firstItem="cVH-oS-IPH" firstAttribute="top" secondItem="PKZ-2L-msS" secondAttribute="top" constant="5" id="Zbz-iO-Smp"/>
                             <constraint firstItem="PKZ-2L-msS" firstAttribute="trailing" secondItem="J0j-d6-6DU" secondAttribute="trailing" constant="20" id="eJU-AD-WIt"/>
@@ -320,6 +330,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="CategoriesCollection" destination="gcA-RQ-EgR" id="YAQ-JO-kjQ"/>
+                        <outlet property="searchBar" destination="Pjd-vf-rik" id="LdK-Af-p70"/>
                         <outlet property="tableview" destination="J0j-d6-6DU" id="yw3-Ga-7wA"/>
                         <segue destination="i95-4h-IDp" kind="push" identifier="toAddToDo" id="Opq-Fz-iVl"/>
                         <segue destination="AkG-P7-Thj" kind="push" identifier="categoryItemsVC" id="vQ0-38-bKA"/>
