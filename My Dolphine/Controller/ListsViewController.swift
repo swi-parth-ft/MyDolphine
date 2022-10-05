@@ -17,7 +17,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     var sections = [tableCat]()
     
     let searchController = UISearchController()
-    var FilteredItems: [Task] =  []
+    var FilteredItems: [Task] = []
     @IBOutlet weak var searchBar: UISearchBar!
     var active = false
     var tempCategories:[String] = []
@@ -99,6 +99,8 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     
     override func viewWillAppear(_ animated: Bool) {
         
+        doneItem = []
+        notDoneItem = []
         tableview.reloadData()
             navigationController?.navigationBar.prefersLargeTitles = false
             ref.observe(.value, with: { snapshot in
@@ -129,6 +131,9 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 //MARK: - Set items in table to newItems
                 self.items = newItems
                 self.FilteredItems = self.items
+                
+                self.doneItem = []
+                self.notDoneItem = []
                 
                 for item in self.items {
                     if item.done {
@@ -224,9 +229,17 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     override func viewDidDisappear(_ animated: Bool) {
         refObservers.forEach(ref.removeObserver(withHandle:))
         refObservers = []
-
+        
+        print("view disappeared")
+        doneItem = []
+        notDoneItem = []
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        doneItem = []
+        notDoneItem = []
+    }
+    
     @IBAction func addNewCategoryClicked(_ sender: Any) {
         var emoji = UITextField()
         var nameField = UITextField()
@@ -346,10 +359,14 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         cell.itemName.text = groceryItem.name
         cell.itemQuantity.text = "\(groceryItem.quantity)"
         if groceryItem.done {
+            doneItem = []
+            notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.gray
             cell.itemQuantity.textColor = UIColor.gray
         } else {
+            doneItem = []
+            notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.init(named: "LabelColor")
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
@@ -367,7 +384,8 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
             }
         
         }
-        
+        doneItem = []
+        notDoneItem = []
         return cell
     }
     
@@ -534,11 +552,44 @@ extension ListsViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText == "" {
             FilteredItems = items
+            
+            for item in FilteredItems {
+                if item.done {
+                    self.doneItem.append(item)
+                } else {
+                    self.notDoneItem.append(item)
+                }
+            }
+            print("----------------------------------------------------------")
+            print(notDoneItem)
+            print("----------------------------------------------------------")
+            print(doneItem)
+            
+            sections = [tableCat(name: "to do", items: notDoneItem), tableCat(name: "done", items: doneItem)]
+            
             tableview.reloadData()
         } else {
             FilteredItems = []
             FilteredItems = items.filter { $0.name.lowercased().contains(searchText.lowercased()) == true }
             print(FilteredItems)
+            
+            doneItem = []
+            notDoneItem = []
+            
+            for item in FilteredItems {
+                if item.done {
+                    self.doneItem.append(item)
+                } else {
+                    self.notDoneItem.append(item)
+                }
+            }
+            print("----------------------------------------------------------")
+            print(notDoneItem)
+            print("----------------------------------------------------------")
+            print(doneItem)
+            
+            sections = [tableCat(name: "to do", items: notDoneItem), tableCat(name: "done", items: doneItem)]
+            
             tableview.reloadData()
         }
     }
