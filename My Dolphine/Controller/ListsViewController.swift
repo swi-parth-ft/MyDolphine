@@ -10,6 +10,12 @@ import Firebase
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
+    var doneItem: [Task] = []
+    var notDoneItem: [Task] = []
+    
+    
+    var sections = [tableCat]()
+    
     let searchController = UISearchController()
     var FilteredItems: [Task] =  []
     @IBOutlet weak var searchBar: UISearchBar!
@@ -93,7 +99,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     
     override func viewWillAppear(_ animated: Bool) {
         
-        
+        tableview.reloadData()
             navigationController?.navigationBar.prefersLargeTitles = false
             ref.observe(.value, with: { snapshot in
                 print("-------------")
@@ -123,6 +129,19 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 //MARK: - Set items in table to newItems
                 self.items = newItems
                 self.FilteredItems = self.items
+                
+                for item in self.items {
+                    if item.done {
+                        self.doneItem.append(item)
+                    } else {
+                        self.notDoneItem.append(item)
+                    }
+                }
+                
+                
+                self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
+                
+                
                 self.tableview.reloadData()
                 for item in self.items {
                     self.tempCategories.append(item.category)
@@ -135,6 +154,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 print("cat 1\(self.tempCategories1)")
                 print(self.tempCategories)
                 
+                self.tableview.reloadData()
                 for category in self.categories {
                     var count = 0
                     for tempCategory in self.tempCategories {
@@ -193,7 +213,8 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 
             })
             
-        
+        tableview.reloadData()
+        CategoriesCollection.reloadData()
        
         
     }
@@ -295,10 +316,20 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
 }
 
 extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return self.sections.count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return self.sections[section].name
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(items.count)
-       // return searchController.isActive ? FilteredItems.count : items.count
-            return FilteredItems.count
+        let items = self.sections[section].items
+           // return FilteredItems.count
+        return items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -306,7 +337,10 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         
         //MARK: - Each grocery item will fill the table
         //let groceryItem = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
-        let groceryItem = FilteredItems[indexPath.row]
+        
+        let items = self.sections[indexPath.section].items
+      //  let groceryItem = FilteredItems[indexPath.row]
+        let groceryItem = items[indexPath.row]
         
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
@@ -342,9 +376,16 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
             return
         }
        // let item = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
-        let item = FilteredItems[indexPath.row]
+     //   let item = FilteredItems[indexPath.row]
+        
+        let items = self.sections[indexPath.section].items
+    
+        let item = items[indexPath.row]
+        
         let toggleCompletion = !item.done
         item.ref?.updateChildValues(["done" : toggleCompletion])
+        doneItem = []
+        notDoneItem = []
         print(searchController.isActive)
     }
     
@@ -361,27 +402,40 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
           guard let cell = tableView.cellForRow(at: indexPath) else {
               return
           }
-          
-          let item = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
+          let items = self.sections[indexPath.section].items
+      
+          let item = items[indexPath.row]
+//          let item = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
           item.ref?.removeValue()
           CategoriesCollection.reloadData()
+          tableview.reloadData()
       }
     }
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        configureTableContextMenu(index: indexPath.row)
+        configureTableContextMenu(index: indexPath)
     }
+    
+    
   
-    func configureTableContextMenu(index: Int) -> UIContextMenuConfiguration{
+    func configureTableContextMenu(index: IndexPath) -> UIContextMenuConfiguration{
         let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
-            
+
             let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
                 print("edit button clicked")
-                self.selectedItem = self.items[index]
+
+                let items = self.sections[index.section].items
+
+                let item = items[index.row]
+                print(item)
+                self.selectedItem = item
                 self.performSegue(withIdentifier: "updateItem", sender: self)
             }
             let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
-                let item = self.items[index]
+
+                let items = self.sections[index.section].items
+
+                let item = items[index.row]
                 item.ref?.removeValue()
                 //add tasks...
             }

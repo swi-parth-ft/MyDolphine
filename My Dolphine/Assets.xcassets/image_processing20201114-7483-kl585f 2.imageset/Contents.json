@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "dolphinIcon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "dolphinIcon@2x.png",
+      "filename" : "image_processing20201114-7483-kl585f 2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "dolphinIcon@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
