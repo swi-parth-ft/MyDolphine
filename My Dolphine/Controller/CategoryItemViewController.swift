@@ -10,6 +10,12 @@ import Firebase
 
 class CategoryItemViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    var categories: [Category] = []
+    //arrays for table sections
+    var doneItem: [Task] = []
+    var notDoneItem: [Task] = []
+    var sections = [tableCat]()
+    var selectedItem: Task?
     @IBOutlet weak var tableView: UITableView!
     var catName: String = ""
     var catEmoji: String = ""
@@ -69,22 +75,60 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
              self.items = newItems
              self.tableView.reloadData()
              
+             for item in self.items {
+                 if item.done {
+                     self.doneItem.append(item)
+                 } else {
+                     self.notDoneItem.append(item)
+                 }
+             }
              
+             self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
+             
+             self.tableView.reloadData()
            
          })
          
         
 
       
-         
+         tableView.reloadData()
          
         
          
      }
 
+    override func viewDidDisappear(_ animated: Bool) {
+       
+        doneItem = []
+        notDoneItem = []
+    }
 
+    override func viewDidAppear(_ animated: Bool) {
+        doneItem = []
+        notDoneItem = []
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+      
+        let vc2 = segue.destination as? EditViewController
+        let indexPath = tableView.indexPathForSelectedRow
+        vc2!.selectedItem = selectedItem
+        vc2!.categories = categories
+        
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return self.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return self.sections[section].name
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(items.count)
+        let items = self.sections[section].items
         return items.count
     }
     
@@ -92,21 +136,28 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         let cell = tableView.dequeueReusableCell(withIdentifier: "ReusableCell", for: indexPath) as! TableViewCell
         
         //MARK: - Each grocery item will fill the table
+        let items = self.sections[indexPath.section].items
         let groceryItem = items[indexPath.row]
         
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
         cell.itemQuantity.text = "\(groceryItem.quantity)"
         if groceryItem.done {
+            doneItem = []
+            notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.gray
             cell.itemQuantity.textColor = UIColor.gray
         } else {
+            doneItem = []
+            notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.init(named: "LabelColor")
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
         }
         cell.categoryLabel.text = ""
+        doneItem = []
+        notDoneItem = []
         return cell
     }
     
@@ -114,10 +165,13 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         guard let cell = tableView.cellForRow(at: indexPath) else {
             return
         }
+        let items = self.sections[indexPath.section].items
         let item = items[indexPath.row]
         let toggleCompletion = !item.done
         
         item.ref?.updateChildValues(["done" : toggleCompletion])
+        doneItem = []
+        notDoneItem = []
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -131,11 +185,42 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
           guard let cell = tableView.cellForRow(at: indexPath) else {
               return
           }
-          
+          let items = self.sections[indexPath.section].items
           let item = items[indexPath.row]
           item.ref?.removeValue()
-        
+          tableView.reloadData()
       }
     }
 
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        configureTableContextMenu(index: indexPath)
+    }
+    
+    
+  
+    func configureTableContextMenu(index: IndexPath) -> UIContextMenuConfiguration{
+        let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
+
+            let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
+
+                let items = self.sections[index.section].items
+
+                let item = items[index.row]
+         
+                self.selectedItem = item
+                self.performSegue(withIdentifier: "editFromCat", sender: self)
+            }
+            let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
+
+                let items = self.sections[index.section].items
+
+                let item = items[index.row]
+                item.ref?.removeValue()
+               
+            }
+            return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
+        }
+        return context
+    }
+    
 }

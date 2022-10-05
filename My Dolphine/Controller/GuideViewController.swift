@@ -24,7 +24,7 @@ class GuideViewController: UIPageViewController {
             super.viewDidLoad()
             var appearance = UIPageControl.appearance(whenContainedInInstancesOf: [UIPageViewController.self])
             appearance.pageIndicatorTintColor = UIColor.gray
-            appearance.currentPageIndicatorTintColor = UIColor.red
+            appearance.currentPageIndicatorTintColor = UIColor.blue
             // Do any additional setup after loading the view.
             self.dataSource = self
             if let vc = vcList.first{

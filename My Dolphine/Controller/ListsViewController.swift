@@ -281,6 +281,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         else if let vc1 = segue.destination as? CategoryItemViewController {
             vc1.catName = catName
             vc1.catEmoji = catEmoji
+            vc1.categories = categories
         }
         else if let vc2 = segue.destination as? EditViewController {
             let indexPath = tableview.indexPathForSelectedRow
