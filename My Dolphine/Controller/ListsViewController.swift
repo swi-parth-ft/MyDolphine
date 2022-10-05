@@ -10,18 +10,24 @@ import Firebase
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
+    //arrays for table sections
     var doneItem: [Task] = []
     var notDoneItem: [Task] = []
-    
-    
     var sections = [tableCat]()
     
     let searchController = UISearchController()
+    //array for filtered by search items
     var FilteredItems: [Task] = []
+    
     @IBOutlet weak var searchBar: UISearchBar!
-    var active = false
+    
+ //   var active = false
+    
+    //temp arrays to count category items
     var tempCategories:[String] = []
     var tempCategories1:[String] = []
+    
+    //card counter for category background card
     var cardCounter = 1
     var selectedCategory: String = ""
     var catName: String = ""
@@ -104,10 +110,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         tableview.reloadData()
             navigationController?.navigationBar.prefersLargeTitles = false
             ref.observe(.value, with: { snapshot in
-                print("-------------")
-                print(self.selectedCategory)
                 print(snapshot.value as Any)
-                print("-------------")
             })
             
             //MARK: - Download grocery items from database
@@ -119,9 +122,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                     if let snapshot = child as? DataSnapshot,
                        //MARK: - Create grocery item from downloaded snapshot, add to list
                        let groceryItem = Task(snapshot: snapshot) {
-                        print("----------------------item--------item---------------------------------")
-                        print(groceryItem)
-                        print("----------------------item----------item-------------------------------")
+                      
                         if groceryItem.addedByUser == self.user.uid{
                             
                             newItems.append(groceryItem)
@@ -150,14 +151,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 self.tableview.reloadData()
                 for item in self.items {
                     self.tempCategories.append(item.category)
-                    print("----------------------item------------------------------------------")
-                    print(self.tempCategories)
-                    print(item.category)
-                    print("-------------------------item---------------------------------------")
                 }
-                
-                print("cat 1\(self.tempCategories1)")
-                print(self.tempCategories)
                 
                 self.tableview.reloadData()
                 for category in self.categories {
@@ -177,12 +171,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             })
             
             ref1.observe(.value, with: { snapshot in
-                print("*********************")
-                print(self.selectedCategory)
                 print(snapshot.value as Any)
-                print("*********************")
-                
-                
             })
             
             //MARK: - Download grocery items from database
@@ -203,17 +192,11 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 //MARK: - Set items in table to newItems
                 self.categories = newCategories
                 self.CategoriesCollection.reloadData()
-                print("**************eeeee**")
-                print(newCategories)
-                print("*************eeeee***")
                 
                 
                 
                 for category in self.categories {
                     self.tempCategories1.append(category.category)
-                    print("--------------------category--------------------------------------------")
-                    print(category.category)
-                    print("-----------------------category-----------------------------------------")
                 }
                 
             })
@@ -229,8 +212,6 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     override func viewDidDisappear(_ animated: Bool) {
         refObservers.forEach(ref.removeObserver(withHandle:))
         refObservers = []
-        
-        print("view disappeared")
         doneItem = []
         notDoneItem = []
     }
@@ -258,7 +239,6 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 self.cardCounter = 1
             }
             
-            print(self.cardCounter)
             let category = Category(category: name, emoji: emoji, cardNumber: self.cardCounter, counter: 0, addedByUser: self.user.uid)
             
             //MARK: - Ref to snapshot of grocery list
@@ -317,13 +297,6 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         } catch let signOutError as NSError {
           print("Error signing out: %@", signOutError)
         }
-        
-//        if Auth.auth().currentUser == nil {
-//            DispatchQueue.main.async {
-//                let navController = UINavigationController(rootViewController: ViewController())
-//                self.present(navController, animated: true, completion: nil)
-//            }
-//        }
     }
     
 }
@@ -341,18 +314,14 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(items.count)
         let items = self.sections[section].items
-           // return FilteredItems.count
         return items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ReusableCell", for: indexPath) as! TableViewCell
         
-        //MARK: - Each grocery item will fill the table
-        //let groceryItem = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
         
         let items = self.sections[indexPath.section].items
-      //  let groceryItem = FilteredItems[indexPath.row]
         let groceryItem = items[indexPath.row]
         
         //MARK: - Grocery item name and which user added it
@@ -393,8 +362,6 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         guard let cell = tableView.cellForRow(at: indexPath) else {
             return
         }
-       // let item = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
-     //   let item = FilteredItems[indexPath.row]
         
         let items = self.sections[indexPath.section].items
     
@@ -416,14 +383,13 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
       if editingStyle == .delete {
-        print("Deleted")
+   
           guard let cell = tableView.cellForRow(at: indexPath) else {
               return
           }
           let items = self.sections[indexPath.section].items
       
           let item = items[indexPath.row]
-//          let item = searchController.isActive ? FilteredItems[indexPath.row] : items[indexPath.row]
           item.ref?.removeValue()
           CategoriesCollection.reloadData()
           tableview.reloadData()
@@ -440,12 +406,11 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
 
             let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
-                print("edit button clicked")
 
                 let items = self.sections[index.section].items
 
                 let item = items[index.row]
-                print(item)
+         
                 self.selectedItem = item
                 self.performSegue(withIdentifier: "updateItem", sender: self)
             }
@@ -455,7 +420,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
 
                 let item = items[index.row]
                 item.ref?.removeValue()
-                //add tasks...
+               
             }
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
         }
@@ -530,12 +495,12 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 }
                 alert.addAction(action)
                 self.present(alert, animated: true, completion: nil)
-                //add tasks...
+      
             }
             let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
                 let cat = self.categories[index]
                 cat.ref?.removeValue()
-                //add tasks...
+
             }
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
         }
@@ -560,10 +525,6 @@ extension ListsViewController: UISearchBarDelegate {
                     self.notDoneItem.append(item)
                 }
             }
-            print("----------------------------------------------------------")
-            print(notDoneItem)
-            print("----------------------------------------------------------")
-            print(doneItem)
             
             sections = [tableCat(name: "to do", items: notDoneItem), tableCat(name: "done", items: doneItem)]
             
@@ -583,10 +544,6 @@ extension ListsViewController: UISearchBarDelegate {
                     self.notDoneItem.append(item)
                 }
             }
-            print("----------------------------------------------------------")
-            print(notDoneItem)
-            print("----------------------------------------------------------")
-            print(doneItem)
             
             sections = [tableCat(name: "to do", items: notDoneItem), tableCat(name: "done", items: doneItem)]
             
@@ -595,7 +552,7 @@ extension ListsViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print("clicked")
+       
     }
     
 }

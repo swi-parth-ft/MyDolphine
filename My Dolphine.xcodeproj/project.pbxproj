@@ -16,6 +16,8 @@
 		07AC05D428E78D12006AD37F /* My_Dolphine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 07AC05D228E78D12006AD37F /* My_Dolphine.xcdatamodeld */; };
 		07AC05D628E78D13006AD37F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07AC05D528E78D13006AD37F /* Assets.xcassets */; };
 		07AC05D928E78D13006AD37F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07AC05D728E78D13006AD37F /* LaunchScreen.storyboard */; };
+		07D11EA628EE20BE006C20CF /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D11EA528EE20BE006C20CF /* GuideViewController.swift */; };
+		07D11EA828EE2274006C20CF /* GuideScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D11EA728EE2274006C20CF /* GuideScreenViewController.swift */; };
 		07D604D728E7924F00AD539D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 07D604D628E7924F00AD539D /* FirebaseAuth */; };
 		07D604D928E7924F00AD539D /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 07D604D828E7924F00AD539D /* FirebaseAuthCombine-Community */; };
 		07D604DB28E7924F00AD539D /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 07D604DA28E7924F00AD539D /* FirebaseDatabase */; };
@@ -51,6 +53,8 @@
 		07AC05D528E78D13006AD37F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07AC05D828E78D13006AD37F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		07AC05DA28E78D13006AD37F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07D11EA528EE20BE006C20CF /* GuideViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
+		07D11EA728EE2274006C20CF /* GuideScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideScreenViewController.swift; sourceTree = "<group>"; };
 		07D604EA28E7990500AD539D /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		07D604EB28E7990500AD539D /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		07D604EE28E79CC300AD539D /* ListsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsViewController.swift; sourceTree = "<group>"; };
@@ -132,12 +136,14 @@
 		07D604F928E88AD200AD539D /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				07D11EA528EE20BE006C20CF /* GuideViewController.swift */,
 				07AC05CD28E78D12006AD37F /* ViewController.swift */,
 				07D604EE28E79CC300AD539D /* ListsViewController.swift */,
 				07D604F028E79F1C00AD539D /* AddTaskViewController.swift */,
 				07D604F428E8850E00AD539D /* SignUpViewController.swift */,
 				07DC1A4628EB423300B32D43 /* CategoryItemViewController.swift */,
 				0794C7AA28EB6C20001C81FC /* EditViewController.swift */,
+				07D11EA728EE2274006C20CF /* GuideScreenViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -242,12 +248,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				0700A49B28ED18A200C8C8DD /* tableCat.swift in Sources */,
+				07D11EA628EE20BE006C20CF /* GuideViewController.swift in Sources */,
 				07D604FD28E8A45B00AD539D /* CollectionViewCell.swift in Sources */,
 				07D604F328E79FC900AD539D /* Task.swift in Sources */,
 				07D604EC28E7990500AD539D /* TableViewCell.swift in Sources */,
 				07AC05D428E78D12006AD37F /* My_Dolphine.xcdatamodeld in Sources */,
 				07DC1A4728EB423300B32D43 /* CategoryItemViewController.swift in Sources */,
 				07D604EF28E79CC300AD539D /* ListsViewController.swift in Sources */,
+				07D11EA828EE2274006C20CF /* GuideScreenViewController.swift in Sources */,
 				0794C7AB28EB6C20001C81FC /* EditViewController.swift in Sources */,
 				07AC05CE28E78D12006AD37F /* ViewController.swift in Sources */,
 				07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */,
