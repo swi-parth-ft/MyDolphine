@@ -18,6 +18,7 @@
 		07AC05D928E78D13006AD37F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07AC05D728E78D13006AD37F /* LaunchScreen.storyboard */; };
 		07D11EA628EE20BE006C20CF /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D11EA528EE20BE006C20CF /* GuideViewController.swift */; };
 		07D11EA828EE2274006C20CF /* GuideScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D11EA728EE2274006C20CF /* GuideScreenViewController.swift */; };
+		07D11EAA28EF6444006C20CF /* SelectCatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D11EA928EF6444006C20CF /* SelectCatViewController.swift */; };
 		07D604D728E7924F00AD539D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 07D604D628E7924F00AD539D /* FirebaseAuth */; };
 		07D604D928E7924F00AD539D /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 07D604D828E7924F00AD539D /* FirebaseAuthCombine-Community */; };
 		07D604DB28E7924F00AD539D /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 07D604DA28E7924F00AD539D /* FirebaseDatabase */; };
@@ -55,6 +56,7 @@
 		07AC05DA28E78D13006AD37F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07D11EA528EE20BE006C20CF /* GuideViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
 		07D11EA728EE2274006C20CF /* GuideScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideScreenViewController.swift; sourceTree = "<group>"; };
+		07D11EA928EF6444006C20CF /* SelectCatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCatViewController.swift; sourceTree = "<group>"; };
 		07D604EA28E7990500AD539D /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		07D604EB28E7990500AD539D /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		07D604EE28E79CC300AD539D /* ListsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				07DC1A4628EB423300B32D43 /* CategoryItemViewController.swift */,
 				0794C7AA28EB6C20001C81FC /* EditViewController.swift */,
 				07D11EA728EE2274006C20CF /* GuideScreenViewController.swift */,
+				07D11EA928EF6444006C20CF /* SelectCatViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				07D604F528E8850E00AD539D /* SignUpViewController.swift in Sources */,
 				07DC1A4528EB334E00B32D43 /* User.swift in Sources */,
 				07AC05CC28E78D12006AD37F /* SceneDelegate.swift in Sources */,
+				07D11EAA28EF6444006C20CF /* SelectCatViewController.swift in Sources */,
 				07D604F128E79F1C00AD539D /* AddTaskViewController.swift in Sources */,
 				07DC1A4228E8CFD800B32D43 /* Category.swift in Sources */,
 			);

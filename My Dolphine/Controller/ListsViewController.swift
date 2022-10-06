@@ -10,6 +10,8 @@ import Firebase
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
+   
+    @IBOutlet weak var addCatButton: UIButton!
     //arrays for table sections
     var doneItem: [Task] = []
     var notDoneItem: [Task] = []
@@ -40,6 +42,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     
     var user: User!
     
+    
     @IBOutlet weak var CategoriesCollection: UICollectionView!
     var imageArray = [UIImage(named: "workToDoImage"),UIImage(named: "workToDoImage"),UIImage(named: "workToDoImage")]
     let addButton = UIButton()
@@ -55,9 +58,15 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     var handle: AuthStateDidChangeListenerHandle?
     var longPressGesture: UILongPressGestureRecognizer!
     @IBOutlet weak var tableview: UITableView!
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+      
+        
+       
         searchBar.delegate = self
         self.hideKeyboardWhenTappedAround() 
         print(selectedCategory)
@@ -76,7 +85,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         tableview.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
         tableview.backgroundColor = UIColor.systemGray6
         
-          
+        
         
         
         CategoriesCollection.delegate = self
@@ -144,8 +153,9 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                     }
                 }
                 
+  
+                    self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
                 
-                self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
                 
                 
                 self.tableview.reloadData()
@@ -167,6 +177,20 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 }
                 self.tempCategories = []
                 self.tempCategories1 = []
+                
+                
+                for category in self.categories {
+                    if category.category != "General" {
+                        let category = Category(category: "General", emoji: "🏡", cardNumber: 6, counter: 0, addedByUser: self.user.uid)
+                        
+                        //MARK: - Ref to snapshot of grocery list
+                        let categoryRef = self.ref1.child("General".lowercased())
+                        
+                        categoryRef.setValue(category.toAnyObject())
+                    }
+                }
+         
+             
                 
             })
             
@@ -305,7 +329,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
 extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.sections.count
+            return self.sections.count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -315,7 +339,30 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(items.count)
         let items = self.sections[section].items
-        return items.count
+        if doneItem.count == 0 && notDoneItem.count == 0 {
+            let emptyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height))
+            
+            let imageAttachment = NSTextAttachment()
+            imageAttachment.image = UIImage(systemName: "plus.circle.fill")
+
+            // If you want to enable Color in the SF Symbols.
+            imageAttachment.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.blue)
+
+            let fullString = NSMutableAttributedString(string: "Start adding items by tapping ")
+            fullString.append(NSAttributedString(attachment: imageAttachment))
+            fullString.append(NSAttributedString(string: " in bottom"))
+            emptyLabel.attributedText = fullString
+            
+                //   emptyLabel.text = "Start adding items by tapping + in bottom"
+                   emptyLabel.textAlignment = NSTextAlignment.center
+                   self.tableview.backgroundView = emptyLabel
+                   self.tableview.separatorStyle = UITableViewCell.SeparatorStyle.none
+                   return 0
+        } else {
+            self.tableview.backgroundView = nil
+            return items.count
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -324,6 +371,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         
         let items = self.sections[indexPath.section].items
         let groceryItem = items[indexPath.row]
+
         
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
@@ -431,7 +479,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
 }
 extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return categories.count
+            return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -500,8 +548,18 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
             }
             let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
                 let cat = self.categories[index]
-                cat.ref?.removeValue()
-
+                if cat.category == "General"{
+                    let refreshAlert = UIAlertController(title: "Can not Delete", message: "General Category can not be deleted.", preferredStyle: UIAlertController.Style.alert)
+       
+                   refreshAlert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: { (action: UIAlertAction!) in
+                        
+                               refreshAlert .dismiss(animated: true, completion: nil)
+                      }))
+       
+                       self.present(refreshAlert, animated: true, completion: nil)
+                } else {
+                    cat.ref?.removeValue()
+                }
             }
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
         }
@@ -569,3 +627,5 @@ extension UIViewController {
         view.endEditing(true)
     }
 }
+
+
