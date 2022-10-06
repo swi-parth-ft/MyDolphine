@@ -10,6 +10,7 @@ import Firebase
 
 class CategoryItemViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    let addButton = UIButton()
     var categories: [Category] = []
     //arrays for table sections
     var doneItem: [Task] = []
@@ -34,6 +35,15 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         tableView.backgroundColor = UIColor.systemGray6
         navigationController?.navigationBar.prefersLargeTitles = true
         
+        addButton.setTitle("", for: .normal)
+        addButton.setImage(UIImage(named: "addToDo"), for: .normal)
+        self.view.addSubview(addButton)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        addButton.topAnchor.constraint(greaterThanOrEqualToSystemSpacingBelow: view.topAnchor, multiplier: 50).isActive = true
+        addButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
+        addButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
+        addButton.addTarget(self, action: #selector(toAddToDo), for: .touchUpInside)
+        
         self.title = "\(catName) \(catEmoji)"
         Auth.auth().addStateDidChangeListener { auth, user in
             //MARK: - Listen for online users, set currently logged in user
@@ -47,6 +57,47 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
     }
+    
+    @objc func toAddToDo(){
+        var name = UITextField()
+        var quantity = UITextField()
+        
+        let alert = UIAlertController(title: "Add new item in \(catName)", message: "", preferredStyle: .alert)
+
+        let action = UIAlertAction(title: "Add item", style: .default) { (action) in
+
+            let name = name.text!
+            let quantity = quantity.text!
+            
+            
+         
+            let item = Task(name: name, quantity: Int(quantity) ?? 0, comment: "demo comment", category: self.catName, done: false, addedByUser: self.user.uid)
+            
+            //MARK: - Ref to snapshot of grocery list
+            let itemRef = self.ref.child(name.lowercased())
+            
+            itemRef.setValue(item.toAnyObject())
+           
+
+        }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Name"
+            name = alertTextField
+        }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Quantity"
+            quantity = alertTextField
+        }
+        
+        let action1 = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                    print("Handle Cancel Logic here")
+                    alert.dismiss(animated: true, completion: nil)
+           })
+        alert.addAction(action)
+        alert.addAction(action1)
+        present(alert, animated: true, completion: nil)
+    }
+    
     
      
      override func viewWillAppear(_ animated: Bool) {

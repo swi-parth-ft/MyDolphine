@@ -64,8 +64,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     override func viewDidLoad() {
         super.viewDidLoad()
         
-      
-        
+    
        
         searchBar.delegate = self
         self.hideKeyboardWhenTappedAround() 
@@ -315,13 +314,15 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     }
     
     @IBAction func logoutClicked(_ sender: Any) {
-        let firebaseAuth = Auth.auth()
-        do {
-          try firebaseAuth.signOut()
-            self.navigationController?.popToRootViewController(animated: true)
-        } catch let signOutError as NSError {
-          print("Error signing out: %@", signOutError)
-        }
+        
+        performSegue(withIdentifier: "toSetting", sender: self)
+//        let firebaseAuth = Auth.auth()
+//        do {
+//          try firebaseAuth.signOut()
+//            self.navigationController?.popToRootViewController(animated: true)
+//        } catch let signOutError as NSError {
+//          print("Error signing out: %@", signOutError)
+//        }
     }
     
 }

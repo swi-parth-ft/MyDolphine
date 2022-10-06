@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0700A49B28ED18A200C8C8DD /* tableCat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0700A49A28ED18A200C8C8DD /* tableCat.swift */; };
+		079186FB28EF9AA200ADA03C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079186FA28EF9AA200ADA03C /* SettingsViewController.swift */; };
 		0794C7AB28EB6C20001C81FC /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0794C7AA28EB6C20001C81FC /* EditViewController.swift */; };
 		07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AC05C928E78D12006AD37F /* AppDelegate.swift */; };
 		07AC05CC28E78D12006AD37F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AC05CB28E78D12006AD37F /* SceneDelegate.swift */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		0700A49A28ED18A200C8C8DD /* tableCat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tableCat.swift; sourceTree = "<group>"; };
+		079186FA28EF9AA200ADA03C /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		0794C7AA28EB6C20001C81FC /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		07AC05C628E78D12006AD37F /* My Dolphine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Dolphine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07AC05C928E78D12006AD37F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				0794C7AA28EB6C20001C81FC /* EditViewController.swift */,
 				07D11EA728EE2274006C20CF /* GuideScreenViewController.swift */,
 				07D11EA928EF6444006C20CF /* SelectCatViewController.swift */,
+				079186FA28EF9AA200ADA03C /* SettingsViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 				07D604FD28E8A45B00AD539D /* CollectionViewCell.swift in Sources */,
 				07D604F328E79FC900AD539D /* Task.swift in Sources */,
 				07D604EC28E7990500AD539D /* TableViewCell.swift in Sources */,
+				079186FB28EF9AA200ADA03C /* SettingsViewController.swift in Sources */,
 				07AC05D428E78D12006AD37F /* My_Dolphine.xcdatamodeld in Sources */,
 				07DC1A4728EB423300B32D43 /* CategoryItemViewController.swift in Sources */,
 				07D604EF28E79CC300AD539D /* ListsViewController.swift in Sources */,
