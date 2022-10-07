@@ -12,6 +12,7 @@ class SignUpViewController: UIViewController {
 
     @IBOutlet weak var passkeyTextView: UITextField!
     @IBOutlet weak var homeIdTextView: UITextField!
+    @IBOutlet weak var loginButton: UIButton!
     
     var user: User!
     let ref = Database.database().reference(withPath: "items")
@@ -22,6 +23,8 @@ class SignUpViewController: UIViewController {
     var handle: AuthStateDidChangeListenerHandle?
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loginButton.setTitle("", for: .normal)
         passkeyTextView.isSecureTextEntry = true
         // Do any additional setup after loading the view.
         Auth.auth().addStateDidChangeListener { auth, user in

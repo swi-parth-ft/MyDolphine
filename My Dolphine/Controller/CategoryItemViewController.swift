@@ -182,7 +182,29 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(items.count)
         let items = self.sections[section].items
-        return items.count
+        if doneItem.count == 0 && notDoneItem.count == 0 {
+            let emptyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height))
+            
+            let imageAttachment = NSTextAttachment()
+            imageAttachment.image = UIImage(systemName: "plus.circle.fill")
+
+            // If you want to enable Color in the SF Symbols.
+            imageAttachment.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.blue)
+
+            let fullString = NSMutableAttributedString(string: "Start adding items by tapping ")
+            fullString.append(NSAttributedString(attachment: imageAttachment))
+            fullString.append(NSAttributedString(string: " in bottom"))
+            emptyLabel.attributedText = fullString
+            
+                //   emptyLabel.text = "Start adding items by tapping + in bottom"
+                   emptyLabel.textAlignment = NSTextAlignment.center
+                   self.tableView.backgroundView = emptyLabel
+                   self.tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
+                   return 0
+        } else {
+            self.tableView.backgroundView = nil
+            return items.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -201,12 +223,28 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.gray
             cell.itemQuantity.textColor = UIColor.gray
+            cell.infoButtonAction = { [unowned self] in
+                let cmt = groceryItem.comment
+                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                  let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                  alert.addAction(okAction)
+                        
+                  self.present(alert, animated: true, completion: nil)
+                }
         } else {
             doneItem = []
             notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.init(named: "LabelColor")
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
+            cell.infoButtonAction = { [unowned self] in
+                let cmt = groceryItem.comment
+                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                  let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                  alert.addAction(okAction)
+                        
+                  self.present(alert, animated: true, completion: nil)
+                }
         }
         cell.categoryLabel.text = ""
         doneItem = []

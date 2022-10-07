@@ -47,7 +47,7 @@
 		0700A49A28ED18A200C8C8DD /* tableCat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tableCat.swift; sourceTree = "<group>"; };
 		079186FA28EF9AA200ADA03C /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		0794C7AA28EB6C20001C81FC /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
-		07AC05C628E78D12006AD37F /* My Dolphine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Dolphine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		07AC05C628E78D12006AD37F /* My Dolphin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Dolphin.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07AC05C928E78D12006AD37F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		07AC05CB28E78D12006AD37F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		07AC05CD28E78D12006AD37F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -104,7 +104,7 @@
 		07AC05C728E78D12006AD37F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				07AC05C628E78D12006AD37F /* My Dolphine.app */,
+				07AC05C628E78D12006AD37F /* My Dolphin.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -168,9 +168,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		07AC05C528E78D12006AD37F /* My Dolphine */ = {
+		07AC05C528E78D12006AD37F /* My Dolphin */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 07AC05DD28E78D13006AD37F /* Build configuration list for PBXNativeTarget "My Dolphine" */;
+			buildConfigurationList = 07AC05DD28E78D13006AD37F /* Build configuration list for PBXNativeTarget "My Dolphin" */;
 			buildPhases = (
 				07AC05C228E78D12006AD37F /* Sources */,
 				07AC05C328E78D12006AD37F /* Frameworks */,
@@ -180,7 +180,7 @@
 			);
 			dependencies = (
 			);
-			name = "My Dolphine";
+			name = "My Dolphin";
 			packageProductDependencies = (
 				07D604D628E7924F00AD539D /* FirebaseAuth */,
 				07D604D828E7924F00AD539D /* FirebaseAuthCombine-Community */,
@@ -194,7 +194,7 @@
 				07D604E828E7924F00AD539D /* FirebaseStorageCombine-Community */,
 			);
 			productName = "My Dolphine";
-			productReference = 07AC05C628E78D12006AD37F /* My Dolphine.app */;
+			productReference = 07AC05C628E78D12006AD37F /* My Dolphin.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -212,7 +212,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 07AC05C128E78D12006AD37F /* Build configuration list for PBXProject "My Dolphine" */;
+			buildConfigurationList = 07AC05C128E78D12006AD37F /* Build configuration list for PBXProject "My Dolphin" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -228,7 +228,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				07AC05C528E78D12006AD37F /* My Dolphine */,
+				07AC05C528E78D12006AD37F /* My Dolphin */,
 			);
 		};
 /* End PBXProject section */
@@ -416,17 +416,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P5K444356C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "My Dolphine/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "My Dolphine";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -434,9 +438,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parpods.My-Dolphine";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -445,17 +452,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P5K444356C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "My Dolphine/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "My Dolphine";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -463,16 +474,19 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parpods.My-Dolphine";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		07AC05C128E78D12006AD37F /* Build configuration list for PBXProject "My Dolphine" */ = {
+		07AC05C128E78D12006AD37F /* Build configuration list for PBXProject "My Dolphin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07AC05DB28E78D13006AD37F /* Debug */,
@@ -481,7 +495,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		07AC05DD28E78D13006AD37F /* Build configuration list for PBXNativeTarget "My Dolphine" */ = {
+		07AC05DD28E78D13006AD37F /* Build configuration list for PBXNativeTarget "My Dolphin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07AC05DE28E78D13006AD37F /* Debug */,

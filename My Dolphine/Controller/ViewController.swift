@@ -11,11 +11,14 @@ import FirebaseAuth
 class ViewController: UIViewController {
 
     
+   
+    @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var homeIDTextView: UITextField!
     @IBOutlet weak var passkeyTextView: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        loginButton.setTitle("", for: .normal)
         passkeyTextView.isSecureTextEntry = true
         Auth.auth().addStateDidChangeListener { auth, user in
                 if user != nil{

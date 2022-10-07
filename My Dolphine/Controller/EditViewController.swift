@@ -19,6 +19,7 @@ class EditViewController: UIViewController, selectedCat {
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var quantityText: UITextField!
     
+    @IBOutlet weak var updateButton: UIButton!
     @IBOutlet weak var notes: UITextField!
     @IBOutlet weak var selectCatButton: UIButton!
     @IBOutlet weak var stepper: UIStepper!
@@ -35,6 +36,7 @@ class EditViewController: UIViewController, selectedCat {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        updateButton.setTitle("", for: .normal)
         stepper.value = Double(selectedItem?.quantity ?? 0)
         self.hideKeyboardWhenTappedAround()
         
