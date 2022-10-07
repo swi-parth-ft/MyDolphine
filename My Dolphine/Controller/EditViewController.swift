@@ -19,6 +19,7 @@ class EditViewController: UIViewController, selectedCat {
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var quantityText: UITextField!
     
+    @IBOutlet weak var notes: UITextField!
     @IBOutlet weak var selectCatButton: UIButton!
     @IBOutlet weak var stepper: UIStepper!
     let ref = Database.database().reference(withPath: "items")
@@ -39,7 +40,7 @@ class EditViewController: UIViewController, selectedCat {
         
         nameText.text = selectedItem?.name
         quantityText.text = "Quantity: \(selectedItem?.quantity ?? 0)"
-        
+        notes.text = selectedItem?.comment
         for category in categories {
             cats.append(category.category)
         }
@@ -64,7 +65,7 @@ class EditViewController: UIViewController, selectedCat {
     override func viewDidAppear(_ animated: Bool) {
         print(cats)
         let i1 = cats.firstIndex(where: {$0 == selectedItem!.category})
-        print(i1!)
+//        print(i1!)
     }
     
     @IBAction func stepperTapped(_ sender: Any) {
@@ -90,12 +91,13 @@ class EditViewController: UIViewController, selectedCat {
         
         let name = nameText.text
 //        let quantity = Int(quantityText.text ?? "0") ?? 0
-        
-        let item = Task(name: name!, quantity: quantity, comment: "demo comment", category: newCategory, done: false, addedByUser: self.user!.uid)
+        let note = notes.text!
+        let item = Task(name: name!, quantity: quantity, comment: note, category: newCategory, done: false, addedByUser: self.user!.uid)
         
         selectedItem?.ref?.updateChildValues(["name" : name])
         selectedItem?.ref?.updateChildValues(["quantity" : quantity])
         selectedItem?.ref?.updateChildValues(["category" : newCategory])
+        selectedItem?.ref?.updateChildValues(["comment" : note])
         
         self.navigationController?.popViewController(animated: true)
         self.dismiss(animated: true)

@@ -118,7 +118,9 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
                     //MARK: - Create grocery item from downloaded snapshot, add to list
                     let groceryItem = Task(snapshot: snapshot) {
                      if groceryItem.category == self.catName{
-                         newItems.append(groceryItem)
+                         if groceryItem.addedByUser == self.user.uid{
+                             newItems.append(groceryItem)
+                         }
                      }
                  }
              }

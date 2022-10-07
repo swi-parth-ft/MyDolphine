@@ -19,6 +19,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+            
+        
+                   
+            switch shortcutItem.type {
+            case "com.parpods.home":
+                DispatchQueue.main.async {
+                    self.window!.rootViewController?.parent
+                }
+                break
+            case "com.parpods.add":
+                // Using storyboard
+                let mainStoryboard = UIStoryboard.init(name: "Main", bundle: Bundle.main)
+                let reqVC = mainStoryboard.instantiateViewController(withIdentifier: "AddTaskViewController") as! AddTaskViewController
+                if let homeVC = self.window?.rootViewController as? UINavigationController {
+                    // Push the new view controller
+                    homeVC.pushViewController(reqVC, animated: true)
+                    // Call the method
+                   
+                }
+       
+            default:
+                break
+            }
+        }
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

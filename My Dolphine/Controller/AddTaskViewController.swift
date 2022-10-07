@@ -23,6 +23,7 @@ class AddTaskViewController: UIViewController, selectedCat {
     var selectedCategory = ""
     var item: [Task] = []
     
+    @IBOutlet weak var notes: UITextField!
     let ref = Database.database().reference(withPath: "items")
     let usersRef = Database.database().reference(withPath: "online")
     
@@ -97,8 +98,9 @@ class AddTaskViewController: UIViewController, selectedCat {
             selectedCategory = "General"
         }
             
+        let note = notes.text ?? "No Note!"
             
-            let item = Task(name: name, quantity: quantity, comment: "demo comment", category: selectedCategory, done: false, addedByUser: self.user.uid)
+            let item = Task(name: name, quantity: quantity, comment: note, category: selectedCategory, done: false, addedByUser: self.user.uid)
             
             //MARK: - Ref to snapshot of grocery list
             let itemRef = self.ref.child(name.lowercased())

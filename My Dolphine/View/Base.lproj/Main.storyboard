@@ -452,7 +452,7 @@
         <!--Add Task View Controller-->
         <scene sceneID="BXY-UT-b0P">
             <objects>
-                <viewController id="i95-4h-IDp" customClass="AddTaskViewController" customModule="My_Dolphine" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddTaskViewController" id="i95-4h-IDp" customClass="AddTaskViewController" customModule="My_Dolphine" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Jsj-0h-KqK">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -503,13 +503,21 @@
                                     <constraint firstAttribute="trailing" secondItem="6Yu-zx-MXT" secondAttribute="trailing" id="nYX-PP-5Gj"/>
                                 </constraints>
                             </stackView>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Notes" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="m55-ob-nmX">
+                                <rect key="frame" x="27.666666666666657" y="249.33333333333337" width="337.66666666666674" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hSB-tW-BaV"/>
                         <color key="backgroundColor" systemColor="systemGray6Color"/>
                         <constraints>
                             <constraint firstItem="G3H-nJ-LkC" firstAttribute="centerX" secondItem="Jsj-0h-KqK" secondAttribute="centerX" id="6Ay-2R-lC6"/>
                             <constraint firstItem="G3H-nJ-LkC" firstAttribute="top" secondItem="hSB-tW-BaV" secondAttribute="top" constant="20.000000000000028" id="Ul9-8P-Bdm"/>
+                            <constraint firstItem="m55-ob-nmX" firstAttribute="leading" secondItem="hSB-tW-BaV" secondAttribute="leading" constant="27.670000000000002" id="Yk8-cX-oII"/>
                             <constraint firstItem="G3H-nJ-LkC" firstAttribute="leading" secondItem="hSB-tW-BaV" secondAttribute="leading" constant="27.666666666666657" id="gbL-Bj-RFD"/>
+                            <constraint firstItem="hSB-tW-BaV" firstAttribute="trailing" secondItem="m55-ob-nmX" secondAttribute="trailing" constant="27.670000000000002" id="pEe-O3-3V6"/>
+                            <constraint firstItem="m55-ob-nmX" firstAttribute="top" secondItem="G3H-nJ-LkC" secondAttribute="bottom" constant="10" id="rte-tY-Ev6"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="JZd-ew-lHp">
@@ -524,6 +532,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="nameText" destination="4s1-mv-eXJ" id="jWa-8M-3Da"/>
+                        <outlet property="notes" destination="m55-ob-nmX" id="Rwq-YA-KHg"/>
                         <outlet property="quantityText" destination="yb4-CK-kOT" id="mDt-uf-f73"/>
                         <outlet property="selectCatButton" destination="3Z6-UF-9se" id="xRV-r5-WQS"/>
                         <outlet property="stepper" destination="8UM-wt-2ku" id="lbr-kM-ecD"/>
@@ -532,7 +541,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nq7-77-EEs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3488" y="-2"/>
+            <point key="canvasLocation" x="3487.7862595419847" y="-2.1126760563380285"/>
         </scene>
         <!--Select Cat View Controller-->
         <scene sceneID="mFp-2z-CXJ">
@@ -702,24 +711,32 @@
                                     <action selector="updateClicked:" destination="0iF-9c-2mu" eventType="touchUpInside" id="qic-NN-mIa"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Notes" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="TMx-BB-GiK">
+                                <rect key="frame" x="27.666666666666657" y="205" width="337.66666666666674" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="oOV-0m-r4T">
-                                <rect key="frame" x="27.666666666666657" y="79" width="337.66666666666674" height="122"/>
+                                <rect key="frame" x="27.666666666666657" y="79" width="337.66666666666674" height="116"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2Nk-uH-Dre">
-                                        <rect key="frame" x="0.0" y="0.0" width="337.66666666666669" height="40"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="337.66666666666669" height="34"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="34" id="WxF-4V-oHF"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="PGN-sC-ace">
-                                        <rect key="frame" x="0.0" y="48" width="337.66666666666669" height="26"/>
+                                        <rect key="frame" x="0.0" y="42" width="337.66666666666669" height="32"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Quantity" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cM9-rX-fJK">
-                                                <rect key="frame" x="0.0" y="0.0" width="228.66666666666666" height="26"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="228.66666666666666" height="32"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
                                             <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="6fC-kw-N2B">
-                                                <rect key="frame" x="243.66666666666663" y="0.0" width="94" height="26"/>
+                                                <rect key="frame" x="243.66666666666663" y="0.0" width="94" height="32"/>
                                                 <connections>
                                                     <action selector="stepperTapped:" destination="0iF-9c-2mu" eventType="valueChanged" id="YbG-3e-Rsq"/>
                                                     <action selector="stepperTapped:" destination="i95-4h-IDp" eventType="valueChanged" id="r6Z-ef-d4N"/>
@@ -728,10 +745,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mk3-T2-Ok8">
-                                        <rect key="frame" x="0.0" y="82" width="337.66666666666669" height="40"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="40" id="l4x-yn-vpA"/>
-                                        </constraints>
+                                        <rect key="frame" x="0.0" y="82" width="337.66666666666669" height="34"/>
                                         <color key="tintColor" red="0.14901961389999999" green="0.1843137443" blue="0.65882354970000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Select category"/>
@@ -752,9 +766,12 @@
                         <constraints>
                             <constraint firstItem="hWP-zw-Cv3" firstAttribute="centerX" secondItem="gAX-wJ-20E" secondAttribute="centerX" id="Cqz-Ba-ONP"/>
                             <constraint firstItem="oOV-0m-r4T" firstAttribute="leading" secondItem="s51-h5-4eO" secondAttribute="leading" constant="27.670000000000002" id="TiY-9H-x7Q"/>
+                            <constraint firstItem="TMx-BB-GiK" firstAttribute="top" secondItem="oOV-0m-r4T" secondAttribute="bottom" constant="10" id="UBP-g2-G69"/>
                             <constraint firstItem="oOV-0m-r4T" firstAttribute="top" secondItem="gAX-wJ-20E" secondAttribute="topMargin" constant="20" id="cZS-6j-Wn1"/>
                             <constraint firstItem="s51-h5-4eO" firstAttribute="trailing" secondItem="oOV-0m-r4T" secondAttribute="trailing" constant="27.670000000000002" id="o76-cd-GJU"/>
+                            <constraint firstItem="s51-h5-4eO" firstAttribute="trailing" secondItem="TMx-BB-GiK" secondAttribute="trailing" constant="27.670000000000002" id="oR2-ky-adf"/>
                             <constraint firstItem="s51-h5-4eO" firstAttribute="bottom" secondItem="hWP-zw-Cv3" secondAttribute="bottom" constant="35" id="wdC-8c-SX5"/>
+                            <constraint firstItem="TMx-BB-GiK" firstAttribute="leading" secondItem="s51-h5-4eO" secondAttribute="leading" constant="27.670000000000002" id="xCd-tZ-Rqi"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ohi-73-kEK">
@@ -769,6 +786,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="nameText" destination="2Nk-uH-Dre" id="wxT-yl-aTG"/>
+                        <outlet property="notes" destination="TMx-BB-GiK" id="lUq-MC-TBg"/>
                         <outlet property="quantityText" destination="cM9-rX-fJK" id="ABK-Mh-9sw"/>
                         <outlet property="selectCatButton" destination="mk3-T2-Ok8" id="dVH-wg-sWt"/>
                         <outlet property="stepper" destination="6fC-kw-N2B" id="WhZ-sr-vRV"/>
@@ -898,7 +916,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="RmQ-Eo-6nC"/>
-        <segue reference="2mu-go-6tQ"/>
+        <segue reference="ceU-Nl-pcu"/>
         <segue reference="ldU-8i-Lvp"/>
     </inferredMetricsTieBreakers>
     <resources>

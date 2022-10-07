@@ -178,16 +178,16 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 self.tempCategories1 = []
                 
                 
-                for category in self.categories {
-                    if category.category != "General" {
-                        let category = Category(category: "General", emoji: "🏡", cardNumber: 6, counter: 0, addedByUser: self.user.uid)
-                        
-                        //MARK: - Ref to snapshot of grocery list
-                        let categoryRef = self.ref1.child("General".lowercased())
-                        
-                        categoryRef.setValue(category.toAnyObject())
-                    }
-                }
+//                for category in self.categories {
+//                    if category.category != "General" {
+//                        let category = Category(category: "General", emoji: "🏡", cardNumber: 6, counter: 0, addedByUser: self.user.uid)
+//                        
+//                        //MARK: - Ref to snapshot of grocery list
+//                        let categoryRef = self.ref1.child("General".lowercased())
+//                        
+//                        categoryRef.setValue(category.toAnyObject())
+//                    }
+//                }
          
              
                 
@@ -383,12 +383,28 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.gray
             cell.itemQuantity.textColor = UIColor.gray
+            cell.infoButtonAction = { [unowned self] in
+                let cmt = groceryItem.comment
+                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                  let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                  alert.addAction(okAction)
+                        
+                  self.present(alert, animated: true, completion: nil)
+                }
         } else {
             doneItem = []
             notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.init(named: "LabelColor")
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
+            cell.infoButtonAction = { [unowned self] in
+                let cmt = groceryItem.comment
+                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                  let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                  alert.addAction(okAction)
+                        
+                  self.present(alert, animated: true, completion: nil)
+                }
         }
         
         for cats in categories{

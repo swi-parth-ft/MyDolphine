@@ -2,6 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>plus.app</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.parpods.add</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Add Item</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>house</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.parpods.home</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Home</string>
+		</dict>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

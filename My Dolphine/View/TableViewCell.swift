@@ -14,6 +14,9 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var CheckButton: UIButton!
     @IBOutlet weak var categoryLabel: UILabel!
     
+    @IBOutlet weak var infoButton: UIButton!
+    
+    var infoButtonAction : (() -> ())?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -25,4 +28,8 @@ class TableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    
+    @IBAction func infoButtonClicked(_ sender: Any) {
+        infoButtonAction?()
+    }
 }
