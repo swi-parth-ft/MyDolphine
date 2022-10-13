@@ -214,6 +214,21 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         let items = self.sections[indexPath.section].items
         let groceryItem = items[indexPath.row]
         
+        var emoji = ""
+        for cats in categories{
+            
+            if groceryItem.category == cats.category {
+                if cats.emoji != "" {
+                    emoji = cats.emoji
+                   
+                }
+                else{
+                   emoji = ""
+                }
+            }
+        
+        }
+        
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
         cell.itemQuantity.text = "\(groceryItem.quantity)"
@@ -225,7 +240,7 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
             cell.itemQuantity.textColor = UIColor.gray
             cell.infoButtonAction = { [unowned self] in
                 let cmt = groceryItem.comment
-                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "\(groceryItem.name) \(emoji)", message: "Note: \(cmt)", preferredStyle: .alert)
                   let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                   alert.addAction(okAction)
                         
@@ -239,7 +254,7 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
             cell.infoButtonAction = { [unowned self] in
                 let cmt = groceryItem.comment
-                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "\(groceryItem.name) \(emoji)", message: "Note: \(cmt)", preferredStyle: .alert)
                   let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                   alert.addAction(okAction)
                         

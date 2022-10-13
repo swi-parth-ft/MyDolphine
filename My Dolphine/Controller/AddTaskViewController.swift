@@ -98,9 +98,12 @@ class AddTaskViewController: UIViewController, selectedCat {
             selectedCategory = "General"
         }
             
-        let note = notes.text ?? "No Note!"
+        var note = notes.text
+        if note == "" {
+            note = "No note!"
+        }
             
-            let item = Task(name: name, quantity: quantity, comment: note, category: selectedCategory, done: false, addedByUser: self.user.uid)
+        let item = Task(name: name, quantity: quantity, comment: note!, category: selectedCategory, done: false, addedByUser: self.user.uid)
             
             //MARK: - Ref to snapshot of grocery list
             let itemRef = self.ref.child(name.lowercased())

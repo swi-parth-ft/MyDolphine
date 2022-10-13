@@ -7,9 +7,13 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
+    
+    var category = [Categories]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
    
     @IBOutlet weak var addCatButton: UIButton!
     //arrays for table sections
@@ -177,7 +181,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 self.tempCategories = []
                 self.tempCategories1 = []
                 
-                
+                self.CategoriesCollection.reloadData()
 //                for category in self.categories {
 //                    if category.category != "General" {
 //                        let category = Category(category: "General", emoji: "🏡", cardNumber: 6, counter: 0, addedByUser: self.user.uid)
@@ -373,10 +377,25 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         let items = self.sections[indexPath.section].items
         let groceryItem = items[indexPath.row]
 
-        
+        var emoji = ""
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
         cell.itemQuantity.text = "\(groceryItem.quantity)"
+        
+        for cats in categories{
+            
+            if groceryItem.category == cats.category {
+                if cats.emoji != "" {
+                    emoji = cats.emoji
+                    cell.categoryLabel.text = cats.emoji
+                }
+                else{
+                    cell.categoryLabel.text = groceryItem.category
+                }
+            }
+        
+        }
+        
         if groceryItem.done {
             doneItem = []
             notDoneItem = []
@@ -385,7 +404,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
             cell.itemQuantity.textColor = UIColor.gray
             cell.infoButtonAction = { [unowned self] in
                 let cmt = groceryItem.comment
-                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "\(groceryItem.name) \(emoji)", message: "Note: \(cmt)", preferredStyle: .alert)
                   let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                   alert.addAction(okAction)
                         
@@ -399,7 +418,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
             cell.infoButtonAction = { [unowned self] in
                 let cmt = groceryItem.comment
-                let alert = UIAlertController(title: "\(groceryItem.name)", message: "\(cmt)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "\(groceryItem.name) \(emoji)", message: "Note: \(cmt)", preferredStyle: .alert)
                   let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                   alert.addAction(okAction)
                         
@@ -407,18 +426,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
                 }
         }
         
-        for cats in categories{
-            
-            if groceryItem.category == cats.category {
-                if cats.emoji != "" {
-                    cell.categoryLabel.text = cats.emoji
-                }
-                else{
-                    cell.categoryLabel.text = groceryItem.category
-                }
-            }
-        
-        }
+       
         doneItem = []
         notDoneItem = []
         return cell
