@@ -49,7 +49,8 @@ class AddTaskViewController: UIViewController, selectedCat {
         
      
         
-        self.hideKeyboardWhenTappedAround()
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.sizeToFit()
         
         Auth.auth().addStateDidChangeListener { auth, user in
             guard let user = user else { return }
@@ -133,4 +134,17 @@ class AddTaskViewController: UIViewController, selectedCat {
     }
     
     
+}
+
+extension UITextField {
+    func setLeftPaddingPoints(_ amount:CGFloat){
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: self.frame.size.height))
+        self.leftView = paddingView
+        self.leftViewMode = .always
+    }
+    func setRightPaddingPoints(_ amount:CGFloat) {
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: self.frame.size.height))
+        self.rightView = paddingView
+        self.rightViewMode = .always
+    }
 }

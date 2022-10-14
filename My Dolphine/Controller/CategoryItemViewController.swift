@@ -84,21 +84,29 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
     @objc func toAddToDo(){
         var name = UITextField()
         var quantity = UITextField()
-        
-        let alert = UIAlertController(title: "Add new item in \(catName)", message: "", preferredStyle: .alert)
+        var note = UITextField()
+        let alert = UIAlertController(title: "Add new item in \(catName) \(catEmoji)", message: "", preferredStyle: .alert)
 
         let action = UIAlertAction(title: "Add item", style: .default) { (action) in
 
-            let name = name.text!
-            let quantity = quantity.text!
-
+            var name = name.text
+            let quantity = quantity.text
+            var note = note.text
             let newItem = Items(context: self.context)
+            
+            if name == "" {
+                name = "item"
+            }
+            
+            if note == "" {
+                note = "no note"
+            }
             
             newItem.name = name
             newItem.isDone = false
-            newItem.note = "no note"
+            newItem.note = note
             newItem.category = self.catName
-            newItem.quantity = Int64(quantity) ?? 0
+            newItem.quantity = Int64(quantity ?? "0") ?? 0
             self.itemc.append(newItem)
             self.saveItem()
 
@@ -110,6 +118,10 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Quantity"
             quantity = alertTextField
+        }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Note"
+            note = alertTextField
         }
         
         let action1 = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in

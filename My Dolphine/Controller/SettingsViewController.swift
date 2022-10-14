@@ -43,14 +43,17 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         if modes[indexPath.row] == "dark" {
             let window = UIApplication.shared.keyWindow
             window?.overrideUserInterfaceStyle = .dark
+            UserDefaults.standard.set(1, forKey: "apperence")
         }
-        else if modes[indexPath.row] == "dark" {
+        else if modes[indexPath.row] == "light" {
             let window = UIApplication.shared.keyWindow
             window?.overrideUserInterfaceStyle = .light
+            UserDefaults.standard.set(2, forKey: "apperence")
         }
         else {
             let window = UIApplication.shared.keyWindow
             window?.overrideUserInterfaceStyle = .unspecified
+            UserDefaults.standard.set(0, forKey: "apperence")
         }
     }
     

@@ -70,6 +70,20 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let apprence = UserDefaults.standard.integer(forKey: "apperence")
+        
+        if apprence == 1 {
+            let window = UIApplication.shared.keyWindow
+            window?.overrideUserInterfaceStyle = .dark
+        } else if apprence == 2 {
+            let window = UIApplication.shared.keyWindow
+            window?.overrideUserInterfaceStyle = .light
+        } else {
+            let window = UIApplication.shared.keyWindow
+            window?.overrideUserInterfaceStyle = .unspecified
+        }
+        
+        
         loadCategory()
         loadItem()
         
@@ -123,15 +137,15 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         //let request: NSFetchRequest<Item> = Item.fetchRequest()
         do {
         category = try context.fetch(request)
-            if category.isEmpty {
-                let newCategory = Categories(context: self.context)
-                newCategory.name = "General"
-                newCategory.emoji = "🏡"
-                newCategory.cardNumber = 6
-                newCategory.counter = 0
-                self.category.append(newCategory)
-                self.saveCategory()
-            }
+//            if category.isEmpty {
+//                let newCategory = Categories(context: self.context)
+//                newCategory.name = "General"
+//                newCategory.emoji = "🏡"
+//                newCategory.cardNumber = 6
+//                newCategory.counter = 0
+//                self.category.append(newCategory)
+//                self.saveCategory()
+//            }
             
             categorySorted = category.sorted(by: { $0.name!.lowercased() < $1.name!.lowercased()})
             print(categorySorted)
@@ -180,7 +194,11 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         navigationController?.navigationBar.prefersLargeTitles = false
             
        updateCollection()
-        
+        let guide = UserDefaults.standard.integer(forKey: "guide")
+        if guide != 1 {
+            performSegue(withIdentifier: "toGuide", sender: self)
+            UserDefaults.standard.set(1, forKey: "guide")
+        }
     }
 
     func updateCollection() {

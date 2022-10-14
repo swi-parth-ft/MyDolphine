@@ -39,7 +39,10 @@ class EditViewController: UIViewController, selectedCat {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.largeTitleDisplayMode = .never
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.sizeToFit()
+        
         updateButton.setTitle("", for: .normal)
         stepper.value = Double(selectedItem?.quantity ?? 0)
         self.hideKeyboardWhenTappedAround()
