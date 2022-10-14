@@ -7,16 +7,20 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class CategoryItemViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    var itemc = [Items]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     let addButton = UIButton()
-    var categories: [Category] = []
+    var categories: [Categories] = []
     //arrays for table sections
-    var doneItem: [Task] = []
-    var notDoneItem: [Task] = []
+    var doneItem: [Items] = []
+    var notDoneItem: [Items] = []
     var sections = [tableCat]()
-    var selectedItem: Task?
+    var selectedItem: Items?
     @IBOutlet weak var tableView: UITableView!
     var catName: String = ""
     var catEmoji: String = ""
@@ -30,10 +34,13 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.sizeToFit()
+        loadItem()
+        self.tableView.contentInsetAdjustmentBehavior = .never
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.systemGray6
-        navigationController?.navigationBar.prefersLargeTitles = true
         
         addButton.setTitle("", for: .normal)
         addButton.setImage(UIImage(named: "addToDo"), for: .normal)
@@ -45,18 +52,34 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         addButton.addTarget(self, action: #selector(toAddToDo), for: .touchUpInside)
         
         self.title = "\(catName) \(catEmoji)"
-        Auth.auth().addStateDidChangeListener { auth, user in
-            //MARK: - Listen for online users, set currently logged in user
-            guard let user = user else { return }
-            self.user = User(authData: user)
-        
-            let currentUserRef = self.usersRef.child(self.user.uid)
-            currentUserRef.setValue(self.user.email)
-            currentUserRef.onDisconnectRemoveValue()
-        }
         
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
     }
+    
+    
+    func loadItem(with request: NSFetchRequest<Items> = Items.fetchRequest()){
+        //let request: NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+        itemc = try context.fetch(request)
+            for i in itemc {
+                if i.category == catName {
+                    if i.isDone {
+                        doneItem.append(i)
+                    } else {
+                        notDoneItem.append(i)
+                    }
+                } else {
+                    print("no items for this cat")
+                }
+            }
+            
+        self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
+        } catch {
+            print("error fetching data")
+        }
+        tableView.reloadData()
+    }
+    
     
     @objc func toAddToDo(){
         var name = UITextField()
@@ -68,16 +91,16 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
 
             let name = name.text!
             let quantity = quantity.text!
+
+            let newItem = Items(context: self.context)
             
-            
-         
-            let item = Task(name: name, quantity: Int(quantity) ?? 0, comment: "demo comment", category: self.catName, done: false, addedByUser: self.user.uid)
-            
-            //MARK: - Ref to snapshot of grocery list
-            let itemRef = self.ref.child(name.lowercased())
-            
-            itemRef.setValue(item.toAnyObject())
-           
+            newItem.name = name
+            newItem.isDone = false
+            newItem.note = "no note"
+            newItem.category = self.catName
+            newItem.quantity = Int64(quantity) ?? 0
+            self.itemc.append(newItem)
+            self.saveItem()
 
         }
         alert.addTextField { (alertTextField) in
@@ -98,68 +121,48 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         present(alert, animated: true, completion: nil)
     }
     
-    
-     
-     override func viewWillAppear(_ animated: Bool) {
-         
-         ref.observe(.value, with: { snapshot in
-           
-             print(snapshot.value as Any)
-             print("-------------")
-         })
-
-         //MARK: - Download grocery items from database
-         ref.queryOrdered(byChild: "completed").observe(.value, with: { snapshot in
-             //MARK: - Populate a list of grocery items to download
-             var newItems: [Task] = []
-             for child in snapshot.children {
-                 //MARK: - Create snapshot which will be a child of all of our snapshots
-                 if let snapshot = child as? DataSnapshot,
-                    //MARK: - Create grocery item from downloaded snapshot, add to list
-                    let groceryItem = Task(snapshot: snapshot) {
-                     if groceryItem.category == self.catName{
-                         if groceryItem.addedByUser == self.user.uid{
-                             newItems.append(groceryItem)
-                         }
-                     }
-                 }
-             }
-             //MARK: - Set items in table to newItems
-             self.items = newItems
-             self.tableView.reloadData()
-             
-             for item in self.items {
-                 if item.done {
-                     self.doneItem.append(item)
-                 } else {
-                     self.notDoneItem.append(item)
-                 }
-             }
-             
-             self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
-             
-             self.tableView.reloadData()
-           
-         })
-         
-        
-
-      
-         tableView.reloadData()
-         
-        
-         
-     }
-
-    override func viewDidDisappear(_ animated: Bool) {
+    func saveItem(){
        
+        do{
+            
+            try
+                context.save()
+                print("data saved")
+            
+        } catch {
+           print("error saving data")
+        }
         doneItem = []
         notDoneItem = []
+        loadItem()
+        self.tableView.reloadData()
+        
+    }
+     
+    override func viewWillAppear(_ animated: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationController?.navigationBar.sizeToFit()
+        }
+        doneItem = []
+        notDoneItem = []
+        loadItem()
+        tableView.reloadData()
+       
+        
     }
 
     override func viewDidAppear(_ animated: Bool) {
         doneItem = []
         notDoneItem = []
+        loadItem()
+        tableView.reloadData()
+    }
+   
+    override func viewDidDisappear(_ animated: Bool) {
+        doneItem = []
+        notDoneItem = []
+        loadItem()
+        tableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -217,9 +220,9 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         var emoji = ""
         for cats in categories{
             
-            if groceryItem.category == cats.category {
+            if groceryItem.category == cats.name {
                 if cats.emoji != "" {
-                    emoji = cats.emoji
+                    emoji = cats.emoji!
                    
                 }
                 else{
@@ -232,29 +235,29 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
         cell.itemQuantity.text = "\(groceryItem.quantity)"
-        if groceryItem.done {
-            doneItem = []
-            notDoneItem = []
+        if groceryItem.isDone {
+//            doneItem = []
+//            notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.gray
             cell.itemQuantity.textColor = UIColor.gray
             cell.infoButtonAction = { [unowned self] in
-                let cmt = groceryItem.comment
-                let alert = UIAlertController(title: "\(groceryItem.name) \(emoji)", message: "Note: \(cmt)", preferredStyle: .alert)
+                let cmt = groceryItem.note
+                let alert = UIAlertController(title: "\(groceryItem.name ?? "item") \(emoji)", message: "Note: \(cmt ?? "No note")", preferredStyle: .alert)
                   let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                   alert.addAction(okAction)
                         
                   self.present(alert, animated: true, completion: nil)
                 }
         } else {
-            doneItem = []
-            notDoneItem = []
+//            doneItem = []
+//            notDoneItem = []
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.init(named: "LabelColor")
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
             cell.infoButtonAction = { [unowned self] in
-                let cmt = groceryItem.comment
-                let alert = UIAlertController(title: "\(groceryItem.name) \(emoji)", message: "Note: \(cmt)", preferredStyle: .alert)
+                let cmt = groceryItem.note
+                let alert = UIAlertController(title: "\(groceryItem.name ?? "item") \(emoji)", message: "Note: \(cmt ?? "No note")", preferredStyle: .alert)
                   let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                   alert.addAction(okAction)
                         
@@ -262,8 +265,8 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
                 }
         }
         cell.categoryLabel.text = ""
-        doneItem = []
-        notDoneItem = []
+//        doneItem = []
+//        notDoneItem = []
         return cell
     }
     
@@ -273,11 +276,9 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         }
         let items = self.sections[indexPath.section].items
         let item = items[indexPath.row]
-        let toggleCompletion = !item.done
+        item.isDone = !item.isDone
+        saveItem()
         
-        item.ref?.updateChildValues(["done" : toggleCompletion])
-        doneItem = []
-        notDoneItem = []
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -293,7 +294,7 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
           }
           let items = self.sections[indexPath.section].items
           let item = items[indexPath.row]
-          item.ref?.removeValue()
+     
           tableView.reloadData()
       }
     }
@@ -321,7 +322,7 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
                 let items = self.sections[index.section].items
 
                 let item = items[index.row]
-                item.ref?.removeValue()
+              
                
             }
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])

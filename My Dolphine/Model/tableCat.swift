@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import CoreData
+
 struct tableCat {
    let name : String
-   var items : [Task]
+   var items : [Items]
 }

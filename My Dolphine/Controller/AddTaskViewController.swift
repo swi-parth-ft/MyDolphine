@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 protocol selectedCategories {
     func setCategory(category: String)
@@ -15,11 +16,14 @@ protocol selectedCategories {
 class AddTaskViewController: UIViewController, selectedCat {
    
     
+    var items = [Items]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     @IBOutlet weak var selectCatButton: UIButton!
     var quantity = 0
     var delegate: selectedCategories?
     
-    var categories: [Category] = []
+    var categories: [Categories] = []
     var selectedCategory = ""
     var item: [Task] = []
     
@@ -38,21 +42,16 @@ class AddTaskViewController: UIViewController, selectedCat {
     
     @IBOutlet weak var stepper: UIStepper!
     @IBOutlet weak var nameText: UITextField!
-//    @IBOutlet weak var categoryPicker: UIPickerView!
     @IBOutlet weak var quantityText: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+     
+        
         self.hideKeyboardWhenTappedAround()
         
-        
-        
-        
-        
-        
         Auth.auth().addStateDidChangeListener { auth, user in
-            //MARK: - Listen for online users, set currently logged in user
             guard let user = user else { return }
             self.user = User(authData: user)
         
@@ -63,10 +62,9 @@ class AddTaskViewController: UIViewController, selectedCat {
 
     }
     
+    
     override func viewDidAppear(_ animated: Bool) {
         
-       // categoryPicker.selectRow(0, inComponent: 0, animated: true)
-       // selectCatButton.setTitle(selectedCategory, for: .normal)
         print(selectedCategory)
     }
     
@@ -77,23 +75,12 @@ class AddTaskViewController: UIViewController, selectedCat {
     }
     
     @IBAction func saveClicked(_ sender: Any) {
-//        if selectedCategory == ""{
-//            print("aefeafaefaff\(selectedCategory)")
-//
-//            selectedCategory = "General"
-//
-//            let refreshAlert = UIAlertController(title: "Select Caregory", message: "Please select category for your item.", preferredStyle: UIAlertController.Style.alert)
-//
-//            refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
-//                        print("Handle Cancel Logic here")
-//                        refreshAlert .dismiss(animated: true, completion: nil)
-//               }))
-//
-//                self.present(refreshAlert, animated: true, completion: nil)
-    //    } else {
-            let name = nameText.text ?? "item"
-        //    let quantity = Int(quantityText.text ?? "0") ?? 0
-            
+
+        var name = nameText.text
+        if name == "" {
+            name = "item"
+        }
+        
         if selectedCategory == "" {
             selectedCategory = "General"
         }
@@ -102,22 +89,33 @@ class AddTaskViewController: UIViewController, selectedCat {
         if note == "" {
             note = "No note!"
         }
+        
+        let newItem = Items(context: self.context)
+        newItem.name = name
+        newItem.category = selectedCategory
+        newItem.note = note
+        newItem.quantity = Int64(quantity)
+        newItem.isDone = false
+        self.items.append(newItem)
+        self.saveItem()
+        
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func saveItem(){
+       
+        do{
             
-        let item = Task(name: name, quantity: quantity, comment: note!, category: selectedCategory, done: false, addedByUser: self.user.uid)
+            try
+                context.save()
+                print("data saved")
             
-            //MARK: - Ref to snapshot of grocery list
-            let itemRef = self.ref.child(name.lowercased())
-            
-            itemRef.setValue(item.toAnyObject())
-            
-            
-            
-            self.navigationController?.popViewController(animated: true)
-      //  }
+        } catch {
+           print("error saving data")
+        }
     }
   
     override func viewWillAppear(_ animated: Bool) {
-       // selectCatButton.setTitle(selectedCategory, for: .normal)
         print(selectedCategory)
     }
     
@@ -136,22 +134,3 @@ class AddTaskViewController: UIViewController, selectedCat {
     
     
 }
-//
-//extension AddTaskViewController: UIPickerViewDelegate, UIPickerViewDataSource{
-//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//        return 1
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//        return categories.count
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-//        return categories[row].category
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-//        selectedCategory = categories[row].category
-//        delegate?.setCategory(category: selectedCategory)
-//    }
-//}

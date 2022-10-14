@@ -45,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		0700A49A28ED18A200C8C8DD /* tableCat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tableCat.swift; sourceTree = "<group>"; };
+		07082F3728F8A9D000FCC7EC /* My Dolphin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "My Dolphin.entitlements"; sourceTree = "<group>"; };
 		079186FA28EF9AA200ADA03C /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		0794C7AA28EB6C20001C81FC /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		07AC05C628E78D12006AD37F /* My Dolphin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Dolphin.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +97,7 @@
 		07AC05BD28E78D12006AD37F = {
 			isa = PBXGroup;
 			children = (
+				07082F3728F8A9D000FCC7EC /* My Dolphin.entitlements */,
 				07AC05C828E78D12006AD37F /* My Dolphine */,
 				07AC05C728E78D12006AD37F /* Products */,
 			);
@@ -417,6 +419,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "My Dolphin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P5K444356C;
@@ -453,6 +456,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "My Dolphin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P5K444356C;

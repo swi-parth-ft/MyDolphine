@@ -7,14 +7,18 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class EditViewController: UIViewController, selectedCat {
 
+    var items = [Items]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     var quantity = 0
     var newCategory = ""
-    var selectedItem: Task?
+    var selectedItem: Items?
     var user: User?
-    var categories: [Category] = []
+    var categories: [Categories] = []
     var cats: [String] = []
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var quantityText: UITextField!
@@ -35,31 +39,22 @@ class EditViewController: UIViewController, selectedCat {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        navigationItem.largeTitleDisplayMode = .never
         updateButton.setTitle("", for: .normal)
         stepper.value = Double(selectedItem?.quantity ?? 0)
         self.hideKeyboardWhenTappedAround()
         
         nameText.text = selectedItem?.name
         quantityText.text = "Quantity: \(selectedItem?.quantity ?? 0)"
-        notes.text = selectedItem?.comment
+        notes.text = selectedItem?.note
         for category in categories {
-            cats.append(category.category)
+            cats.append(category.name!)
         }
         
         selectCatButton.setTitle(selectedItem?.category, for: .normal)
-        newCategory = selectedItem!.category
+        newCategory = selectedItem!.category!
     
-        
-        Auth.auth().addStateDidChangeListener { auth, user in
-            //MARK: - Listen for online users, set currently logged in user
-            guard let user = user else { return }
-            self.user = User(authData: user)
-        
-            let currentUserRef = self.usersRef.child(self.user!.uid)
-            currentUserRef.setValue(self.user?.email)
-            currentUserRef.onDisconnectRemoveValue()
-        }
+     
         
     }
     
@@ -67,7 +62,7 @@ class EditViewController: UIViewController, selectedCat {
     override func viewDidAppear(_ animated: Bool) {
         print(cats)
         let i1 = cats.firstIndex(where: {$0 == selectedItem!.category})
-//        print(i1!)
+
     }
     
     @IBAction func stepperTapped(_ sender: Any) {
@@ -92,17 +87,32 @@ class EditViewController: UIViewController, selectedCat {
     @IBAction func updateClicked(_ sender: Any) {
         
         let name = nameText.text
-//        let quantity = Int(quantityText.text ?? "0") ?? 0
+
         let note = notes.text!
-        let item = Task(name: name!, quantity: quantity, comment: note, category: newCategory, done: false, addedByUser: self.user!.uid)
+
         
-        selectedItem?.ref?.updateChildValues(["name" : name])
-        selectedItem?.ref?.updateChildValues(["quantity" : quantity])
-        selectedItem?.ref?.updateChildValues(["category" : newCategory])
-        selectedItem?.ref?.updateChildValues(["comment" : note])
+        selectedItem!.name = name
+        selectedItem?.category = newCategory
+        selectedItem?.note = note
+        selectedItem?.quantity = Int64(quantity)
+    
+        self.saveItem()
         
         self.navigationController?.popViewController(animated: true)
-        self.dismiss(animated: true)
+//        self.dismiss(animated: true)
+    }
+    
+    func saveItem(){
+       
+        do{
+            
+            try
+                context.save()
+                print("data saved")
+            
+        } catch {
+           print("error saving data")
+        }
     }
 }
 

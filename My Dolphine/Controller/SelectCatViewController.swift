@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import CoreData
+
 protocol selectedCat {
     func setCategory(category: String)
 }
@@ -13,7 +15,7 @@ class SelectCatViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var delegate: selectedCat?
     @IBOutlet weak var tableView: UITableView!
-    var categories: [Category] = []
+    var categories: [Categories] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,13 +32,13 @@ class SelectCatViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "catCell", for: indexPath)
         
-        cell.textLabel?.text = categories[indexPath.row].category
-        print(categories[indexPath.row].category)
+        cell.textLabel?.text = categories[indexPath.row].name
+        print(categories[indexPath.row].name)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.setCategory(category: categories[indexPath.row].category)
+        delegate?.setCategory(category: categories[indexPath.row].name!)
         self.dismiss(animated: true)
     }
 
