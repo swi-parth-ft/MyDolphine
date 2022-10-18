@@ -225,7 +225,7 @@
                         <barButtonItem key="rightBarButtonItem" id="TKR-sC-52A">
                             <imageReference key="image" image="gear" catalog="system" symbolScale="large"/>
                             <connections>
-                                <action selector="logoutClicked:" destination="QHY-vW-z8A" id="K2V-Y2-ZDy"/>
+                                <action selector="settingTapped:" destination="QHY-vW-z8A" id="TAF-qb-jUM"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -233,7 +233,7 @@
                         <outlet property="CategoriesCollection" destination="gcA-RQ-EgR" id="YAQ-JO-kjQ"/>
                         <outlet property="addCatButton" destination="E2W-kO-ib5" id="v50-Xv-Cee"/>
                         <outlet property="searchBar" destination="Pjd-vf-rik" id="LdK-Af-p70"/>
-                        <outlet property="tableview" destination="J0j-d6-6DU" id="yw3-Ga-7wA"/>
+                        <outlet property="tableView" destination="J0j-d6-6DU" id="yw3-Ga-7wA"/>
                         <segue destination="i95-4h-IDp" kind="push" identifier="toAddToDo" id="Opq-Fz-iVl"/>
                         <segue destination="AkG-P7-Thj" kind="push" identifier="categoryItemsVC" id="vQ0-38-bKA"/>
                         <segue destination="0iF-9c-2mu" kind="push" identifier="updateItem" id="RmQ-Eo-6nC"/>
@@ -424,6 +424,7 @@
                         <outlet property="quantityText" destination="yb4-CK-kOT" id="mDt-uf-f73"/>
                         <outlet property="selectCatButton" destination="3Z6-UF-9se" id="xRV-r5-WQS"/>
                         <outlet property="stepper" destination="oOK-Ch-7d6" id="ILK-Zz-Jd5"/>
+                        <outlet property="stepperView" destination="Uzy-tC-ZwT" id="gdN-Gb-IUV"/>
                         <segue destination="K8g-2B-ZDN" kind="presentation" identifier="selectCat" id="ceU-Nl-pcu"/>
                     </connections>
                 </viewController>
@@ -788,6 +789,7 @@
                         <outlet property="quantityText" destination="cM9-rX-fJK" id="ABK-Mh-9sw"/>
                         <outlet property="selectCatButton" destination="mk3-T2-Ok8" id="dVH-wg-sWt"/>
                         <outlet property="stepper" destination="qRW-su-nIv" id="3x0-hK-KtD"/>
+                        <outlet property="stepperView" destination="H6c-3H-hj5" id="3uy-ua-yBt"/>
                         <outlet property="updateButton" destination="hWP-zw-Cv3" id="QQN-C3-11M"/>
                         <segue destination="K8g-2B-ZDN" kind="presentation" identifier="selectCatFromEdit" id="2mu-go-6tQ"/>
                     </connections>

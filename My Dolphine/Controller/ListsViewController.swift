@@ -6,74 +6,52 @@
 //
 
 import UIKit
-import Firebase
 import CoreData
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
-
+    
     var category = [Categories]()
     var categorySorted = [Categories]()
     var itemc = [Items]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-   var catCardNumber = 0
-    @IBOutlet weak var addCatButton: UIButton!
+    var catCardNumber = 0
     //arrays for table sections
     var doneItem: [Items] = []
     var notDoneItem: [Items] = []
     var sections = [tableCat]()
-    
     let searchController = UISearchController()
     //array for filtered by search items
     var FilteredItems: [Items] = []
-    
-    @IBOutlet weak var searchBar: UISearchBar!
-    
- //   var active = false
-    
     //temp arrays to count category items
     var tempCategories:[String] = []
     var tempCategories1:[String] = []
-    
     //card counter for category background card
     var cardCounter = 1
     var selectedCategory: String = ""
     var catName: String = ""
     var catEmoji: String = ""
     var selectedItem: Items?
+    let addButton = UIButton()
+    var categories: [Category] = []
+    var items: [Task] = []
+    var longPressGesture: UILongPressGestureRecognizer!
+    var refreshControl:UIRefreshControl!
+    
+    //MARK: - Outlets
+    @IBOutlet weak var addCatButton: UIButton!
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var CategoriesCollection: UICollectionView!
+    @IBOutlet weak var tableView: UITableView!
+    
     func setCategory(category: String) {
         print(category)
         selectedCategory = category
     }
     
-    var user: User!
-    
-    
-    @IBOutlet weak var CategoriesCollection: UICollectionView!
-    var imageArray = [UIImage(named: "workToDoImage"),UIImage(named: "workToDoImage"),UIImage(named: "workToDoImage")]
-    let addButton = UIButton()
-    
-    var categories: [Category] = []
-    var items: [Task] = []
-    
-    let ref = Database.database().reference(withPath: "items")
-    let ref1 = Database.database().reference(withPath: "categories")
-    let usersRef = Database.database().reference(withPath: "online")
-    
-    var refObservers: [DatabaseHandle] = []
-    var handle: AuthStateDidChangeListenerHandle?
-    var longPressGesture: UILongPressGestureRecognizer!
-    @IBOutlet weak var tableview: UITableView!
-    
-    var refreshControl:UIRefreshControl!
-
-
-    
+    //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-       
-        
         
         let apprence = UserDefaults.standard.integer(forKey: "apperence")
         
@@ -95,13 +73,13 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             }
         }
         
-        
         loadCategory()
         loadItem()
         
+        navigationItem.hidesBackButton = true
+        
         searchBar.delegate = self
-        self.hideKeyboardWhenTappedAround() 
-        print(selectedCategory)
+        self.hideKeyboardWhenTappedAround()
         
         addButton.setTitle("", for: .normal)
         addButton.setImage(UIImage(named: "addToDo"), for: .normal)
@@ -112,43 +90,54 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         addButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
         addButton.addTarget(self, action: #selector(toAddToDo), for: .touchUpInside)
         
-        tableview.delegate = self
-        tableview.dataSource = self
-        tableview.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
-    //    tableview.layer.backgroundColor = UIColor.systemGray3.cgColor
-        tableview.layer.cornerRadius=13
-        
-        
-        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
+        tableView.layer.cornerRadius=13
+
         CategoriesCollection.delegate = self
         CategoriesCollection.dataSource = self
 
-        navigationItem.hidesBackButton = true
-       
-        tableview.reloadData()
+        tableView.reloadData()
         CategoriesCollection.reloadData()
-       
+        
         refreshControl = UIRefreshControl()
         refreshControl.tintColor = UIColor.red
         refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
         
-//        let timer = Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
-        tableview.addSubview(refreshControl)
+        //        let timer = Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
+        tableView.addSubview(refreshControl)
+    }
+    
+    //MARK: - viewDidAppear
+    override func viewDidAppear(_ animated: Bool) {
+        doneItem = []
+        notDoneItem = []
+        loadItem()
+        tableView.reloadData()
+        CategoriesCollection.reloadData()
         
     }
     
+    //MARK: - viewDidDisappear
+    override func viewDidDisappear(_ animated: Bool) {
+        doneItem = []
+        notDoneItem = []
+        loadItem()
+        tableView.reloadData()
+    }
+    
     @objc func refresh(sender: AnyObject){
-       // this function will be called whenever you pull your list for refresh
         loadItem()
         loadCategory()
-        tableview.reloadData()
+        tableView.reloadData()
         refreshControl.endRefreshing()
     }
-
+    
+    //MARK: - load category
     func loadCategory(with request: NSFetchRequest<Categories> = Categories.fetchRequest()){
-        //let request: NSFetchRequest<Item> = Item.fetchRequest()
         do {
-        category = try context.fetch(request)
+            category = try context.fetch(request)
             if category.isEmpty {
                 let newCategory = Categories(context: self.context)
                 newCategory.name = "General"
@@ -179,15 +168,16 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         } catch {
             print("error fetching data")
         }
-        tableview.reloadData()
+        tableView.reloadData()
         CategoriesCollection.reloadData()
     }
     
+    //MARK: - load items
     func loadItem(with request: NSFetchRequest<Items> = Items.fetchRequest()){
         doneItem = []
         notDoneItem = []
         do {
-        itemc = try context.fetch(request)
+            itemc = try context.fetch(request)
             for i in itemc {
                 print(i)
                 if i.isDone {
@@ -199,28 +189,28 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                 }
             }
             
-        self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
+            self.sections = [tableCat(name: "to do", items: self.notDoneItem), tableCat(name: "done", items: self.doneItem)]
             
         } catch {
             print("error fetching data")
         }
-        tableview.reloadData()
+        tableView.reloadData()
         CategoriesCollection.reloadData()
     }
-
-
     
+    
+    //MARK: - viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
-
+        
         doneItem = []
         notDoneItem = []
         loadItem()
         loadCategory()
-        tableview.reloadData()
+        tableView.reloadData()
         
         navigationController?.navigationBar.prefersLargeTitles = false
-            
-       updateCollection()
+        
+        updateCollection()
         let guide = UserDefaults.standard.integer(forKey: "guide")
         if guide != 1 {
             performSegue(withIdentifier: "toGuide", sender: self)
@@ -238,10 +228,11 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             CategoriesCollection.backgroundColor = .systemGray6
         }
     }
-
+    
+    //MARK: - update collection
     func updateCollection() {
         loadCategory()
-        tableview.reloadData()
+        tableView.reloadData()
         tempCategories = []
         for item in itemc {
             tempCategories.append(item.category ?? "nil")
@@ -255,7 +246,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
                     
                     count += 1
                     cat.counter = Int16(count)
-                  
+                    
                     saveCategory()
                 }
             }
@@ -263,26 +254,10 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         }
         tempCategories = []
         
-        tableview.reloadData()
+        tableView.reloadData()
         CategoriesCollection.reloadData()
     }
-    override func viewDidAppear(_ animated: Bool) {
-        doneItem = []
-        notDoneItem = []
-        loadItem()
-        tableview.reloadData()
-        CategoriesCollection.reloadData()
-
-    }
-   
-    override func viewDidDisappear(_ animated: Bool) {
-        doneItem = []
-        notDoneItem = []
-        loadItem()
-        tableview.reloadData()
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-    }
+    
 
     
     @IBAction func addNewCategoryClicked(_ sender: Any) {
@@ -290,9 +265,9 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         var nameField = UITextField()
         
         let alert = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert)
-
+        
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
-
+            
             let name = nameField.text!
             let emoji = emoji.text!
             
@@ -305,8 +280,8 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             newCategory.counter = 0
             self.category.append(newCategory)
             self.saveCategory()
-           
-
+            
+            
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Name"
@@ -318,56 +293,59 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         }
         
         let action1 = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
-                    print("Handle Cancel Logic here")
-                    alert.dismiss(animated: true, completion: nil)
-           })
+            print("Handle Cancel Logic here")
+            alert.dismiss(animated: true, completion: nil)
+        })
         alert.addAction(action)
         alert.addAction(action1)
         present(alert, animated: true, completion: nil)
         
         
-        tableview.reloadData()
+        tableView.reloadData()
     }
     
+    //MARK: - save category
     func saveCategory(){
-       
+        
         do{
             
             try
-                context.save()
-                print("data saved")
+            context.save()
+            print("data saved")
             loadCategory()
             
         } catch {
-           print("error saving data")
+            print("error saving data")
         }
-        self.tableview.reloadData()
+        self.tableView.reloadData()
     }
-     
+    
+    //MARK: - save item
     func saveItem(){
-       
+        
         do{
             
             try
-                context.save()
-                print("data saved")
-            self.tableview.reloadData()
+            context.save()
+            print("data saved")
+            self.tableView.reloadData()
             
         } catch {
-           print("error saving data")
+            print("error saving data")
         }
-        self.tableview.reloadData()
+        self.tableView.reloadData()
         doneItem = []
         notDoneItem = []
         loadItem()
     }
     
+    //MARK: - delete category
     func deleteCat(cat: Categories) {
-       
-                context.delete(cat)
+        
+        context.delete(cat)
         CategoriesCollection.reloadData()
         loadCategory()
-
+        
         do {
             try context.save()
         } catch {
@@ -375,30 +353,31 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         }
     }
     
+    //MARK: - delete items
     func deleteItem(item: Items) {
-       
+        
         context.delete(item)
-        tableview.reloadData()
+        tableView.reloadData()
         doneItem = []
         notDoneItem = []
-
         
         loadItem()
         loadCategory()
         
-
         do {
             try context.save()
             updateCollection()
             CategoriesCollection.reloadData()
         } catch {
-            //Handle error
+            
         }
     }
     
     @objc func toAddToDo(){
         performSegue(withIdentifier: "toAddToDo", sender: self)
     }
+    
+    //MARK: - prepare for
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? AddTaskViewController{
             vc.categories = category
@@ -411,24 +390,22 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             vc1.catCardNumber = catCardNumber
         }
         else if let vc2 = segue.destination as? EditViewController {
-            let indexPath = tableview.indexPathForSelectedRow
+            let indexPath = tableView.indexPathForSelectedRow
             vc2.selectedItem = selectedItem
             vc2.categories = category
         }
     }
     
-    @IBAction func logoutClicked(_ sender: Any) {
-        
+    @IBAction func settingTapped(_ sender: Any) {
         performSegue(withIdentifier: "toSetting", sender: self)
-
     }
-    
 }
 
+//MARK: - tableView extention
 extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     
     func numberOfSections(in tableView: UITableView) -> Int {
-            return self.sections.count
+        return self.sections.count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -443,22 +420,19 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
             
             let imageAttachment = NSTextAttachment()
             imageAttachment.image = UIImage(systemName: "plus.circle.fill")
-
-            // If you want to enable Color in the SF Symbols.
             imageAttachment.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.blue)
-
+            
             let fullString = NSMutableAttributedString(string: "Start adding items by tapping ")
             fullString.append(NSAttributedString(attachment: imageAttachment))
             fullString.append(NSAttributedString(string: " in bottom"))
             emptyLabel.attributedText = fullString
+            emptyLabel.textAlignment = NSTextAlignment.center
             
-                //   emptyLabel.text = "Start adding items by tapping + in bottom"
-                   emptyLabel.textAlignment = NSTextAlignment.center
-                   self.tableview.backgroundView = emptyLabel
-                   self.tableview.separatorStyle = UITableViewCell.SeparatorStyle.none
-                   return 0
+            self.tableView.backgroundView = emptyLabel
+            self.tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
+            return 0
         } else {
-            self.tableview.backgroundView = nil
+            self.tableView.backgroundView = nil
             return items.count
         }
         
@@ -467,62 +441,58 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ReusableCell", for: indexPath) as! TableViewCell
         
-        
         let items = self.sections[indexPath.section].items
-        let groceryItem = items[indexPath.row]
-
-        var emoji = ""
-        //MARK: - Grocery item name and which user added it
-        cell.itemName.text = groceryItem.name
-        cell.itemQuantity.text = "\(groceryItem.quantity)"
+        let item = items[indexPath.row]
         
+        var emoji = ""
+        cell.itemName.text = item.name
+        cell.itemQuantity.text = "\(item.quantity)"
         
         for cats in category{
-            
-            if groceryItem.category == cats.name {
+            if item.category == cats.name {
                 if cats.emoji != "" {
                     emoji = cats.emoji!
                     cell.categoryLabel.text = cats.emoji
                 }
                 else{
-                    cell.categoryLabel.text = groceryItem.category
+                    cell.categoryLabel.text = item.category
                 }
             }
-        
         }
         
-        if groceryItem.isDone {
-//            doneItem = []
-//            notDoneItem = []
+        if item.isDone {
+            let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: item.name!)
+            attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributeString.length))
+            cell.itemName.attributedText = attributeString
             cell.CheckButton.setImage(UIImage(named: "CheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.gray
             cell.itemQuantity.textColor = UIColor.gray
             cell.infoButtonAction = { [unowned self] in
-                let cmt = groceryItem.note
-                let alert = UIAlertController(title: "\(groceryItem.name ?? "item") \(emoji)", message: "Note: \(cmt ?? "No note")", preferredStyle: .alert)
-                  let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                  alert.addAction(okAction)
-                  self.present(alert, animated: true, completion: nil)
-                }
+                let cmt = item.note
+                let alert = UIAlertController(title: "\(item.name ?? "item") \(emoji)", message: "Note: \(cmt ?? "No note")", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            
         } else {
-//            doneItem = []
-//            notDoneItem = []
+            
+            let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: item.name!)
+            attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: [], range: NSMakeRange(0, attributeString.length))
+            cell.itemName.attributedText = attributeString
+            
             cell.CheckButton.setImage(UIImage(named: "UncheckedOrange"), for: .normal)
             cell.itemName.textColor = UIColor.init(named: "LabelColor")
             cell.itemQuantity.textColor = UIColor.init(named: "LabelColor")
             cell.infoButtonAction = { [unowned self] in
-                let cmt = groceryItem.note
-                let alert = UIAlertController(title: "\(groceryItem.name ?? "item") \(emoji)", message: "Note: \(cmt ?? "No note")", preferredStyle: .alert)
-                  let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
-                  alert.addAction(okAction)
-                        
-                  self.present(alert, animated: true, completion: nil)
-                }
+                let cmt = item.note
+                let alert = UIAlertController(title: "\(item.name ?? "item") \(emoji)", message: "Note: \(cmt ?? "No note")", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
+                alert.addAction(okAction)
+                
+                self.present(alert, animated: true, completion: nil)
+            }
         }
-        
-       
-//        doneItem = []
-//        notDoneItem = []
         return cell
     }
     
@@ -530,42 +500,34 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         guard let cell = tableView.cellForRow(at: indexPath) else {
             return
         }
-        
         let items = self.sections[indexPath.section].items
-    
         let item = items[indexPath.row]
-        
         item.isDone = !item.isDone
         saveItem()
-       
-        
-        print(searchController.isActive)
     }
     
     
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
         return true
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-      if editingStyle == .delete {
-   
-          guard let cell = tableView.cellForRow(at: indexPath) else {
-              return
-          }
-          let items = self.sections[indexPath.section].items
-      
-          let item = items[indexPath.row]
-          
-          self.deleteItem(item: item)
-          loadCategory()
-          loadItem()
-          
-          CategoriesCollection.reloadData()
-          tableview.reloadData()
-      }
+        if editingStyle == .delete {
+            
+            guard let cell = tableView.cellForRow(at: indexPath) else {
+                return
+            }
+            let items = self.sections[indexPath.section].items
+            let item = items[indexPath.row]
+            
+            self.deleteItem(item: item)
+            loadCategory()
+            loadItem()
+            
+            CategoriesCollection.reloadData()
+            tableView.reloadData()
+        }
     }
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
@@ -573,46 +535,42 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
     }
     
     
-  
+    
     func configureTableContextMenu(index: IndexPath) -> UIContextMenuConfiguration{
         let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
-
+            
             let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
-
+                
                 let items = self.sections[index.section].items
-
                 let item = items[index.row]
-         
+                
                 self.selectedItem = item
                 self.performSegue(withIdentifier: "updateItem", sender: self)
                 self.loadItem()
             }
             let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
-
+                
                 let items = self.sections[index.section].items
-
                 let item = items[index.row]
                 
                 self.deleteItem(item: item)
-              
-               
             }
+            
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
         }
         return context
     }
-    
 }
+
+//MARK: - collectionView extention
 extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            //return categories.count
         print(category.count)
         return categorySorted.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "categoriesCell", for: indexPath) as! CollectionViewCell
-        
         
         cell.categoryImage.image = UIImage(named: "rec\(categorySorted[indexPath.row].cardNumber)")
         cell.categoryNameLabel.text = categorySorted[indexPath.row].name
@@ -630,34 +588,30 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
         performSegue(withIdentifier: "categoryItemsVC", sender: self)
     }
     
-  
+    
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-            configureContextMenu(index: indexPath.row)
-        }
-     
+        configureContextMenu(index: indexPath.row)
+    }
+    
     func configureContextMenu(index: Int) -> UIContextMenuConfiguration{
         let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
             
             let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
-              
-                
                 
                 let cat = self.categorySorted[index]
                 if cat.name == "General" {
                     let refreshAlert = UIAlertController(title: "Can not Update", message: "General Category can not be updated.", preferredStyle: UIAlertController.Style.alert)
-       
-                        refreshAlert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: { (action: UIAlertAction!) in
+                    
+                    refreshAlert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: { (action: UIAlertAction!) in
                         
-                               refreshAlert .dismiss(animated: true, completion: nil)
-                      }))
-       
-                       self.present(refreshAlert, animated: true, completion: nil)
+                        refreshAlert .dismiss(animated: true, completion: nil)
+                    }))
+                    
+                    self.present(refreshAlert, animated: true, completion: nil)
                 } else {
                     var emoji = UITextField()
                     var nameField = UITextField()
-                    
-                    
                     
                     let alert = UIAlertController(title: "Update category", message: "", preferredStyle: .alert)
                     
@@ -676,7 +630,6 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                     alert.addTextField { (alertTextField) in
                         alertTextField.placeholder = "Name"
                         alertTextField.text = self.categorySorted[index].name
-                        
                         nameField = alertTextField
                     }
                     alert.addTextField { (alertTextField) in
@@ -692,12 +645,12 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 
                 let cat = self.categorySorted[index]
                 let refreshAlert = UIAlertController(title: "Delete Category with items?", message: "Do you want delete items of \(cat.name ?? "this category") as well?", preferredStyle: UIAlertController.Style.alert)
-
+                
                 refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
-                  
+                    
                     
                     let refreshAlert = UIAlertController(title: "Delete", message: "Delete \(cat.name ?? "category") with all items?", preferredStyle: UIAlertController.Style.alert)
-
+                    
                     refreshAlert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action: UIAlertAction!) in
                         
                         for item in self.itemc {
@@ -707,18 +660,18 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                         }
                         self.deleteCat(cat: cat)
                     }))
-
+                    
                     refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
                         print("Handle Cancel Logic here")
                     }))
-
+                    
                     self.present(refreshAlert, animated: true, completion: nil)
                 }))
-
+                
                 refreshAlert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action: UIAlertAction!) in
                     
                     let refreshAlert = UIAlertController(title: "Delete \(cat.name ?? "category")?", message: "All items in \(cat.name ?? "category") will move to General.", preferredStyle: UIAlertController.Style.alert)
-
+                    
                     refreshAlert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action: UIAlertAction!) in
                         for item in self.itemc {
                             if item.category == cat.name {
@@ -729,14 +682,14 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                         self.deleteCat(cat: cat)
                         self.loadCategory()
                         self.loadItem()
-                        self.tableview.reloadData()
+                        self.tableView.reloadData()
                         self.CategoriesCollection.reloadData()
                     }))
-
+                    
                     refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
                         print("Handle Cancel Logic here")
                     }))
-
+                    
                     self.present(refreshAlert, animated: true, completion: nil)
                     self.loadCategory()
                     self.CategoriesCollection.reloadData()
@@ -745,7 +698,7 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 self.present(refreshAlert, animated: true, completion: nil)
                 self.loadCategory()
                 self.CategoriesCollection.reloadData()
-  
+                
             }
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
         }
@@ -753,18 +706,15 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
         self.CategoriesCollection.reloadData()
         return context
     }
-
-  
-    
-    
 }
 
+//MARK: - searchBar extention
 extension ListsViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText == "" {
             FilteredItems = itemc
-
+            
             for item in FilteredItems {
                 if item.isDone {
                     self.doneItem.append(item)
@@ -772,18 +722,18 @@ extension ListsViewController: UISearchBarDelegate {
                     self.notDoneItem.append(item)
                 }
             }
-
+            
             sections = [tableCat(name: "to do", items: notDoneItem), tableCat(name: "done", items: doneItem)]
-
-            tableview.reloadData()
+            
+            tableView.reloadData()
         } else {
             FilteredItems = []
             FilteredItems = itemc.filter { $0.name!.lowercased().contains(searchText.lowercased()) == true }
             print(FilteredItems)
-
+            
             doneItem = []
             notDoneItem = []
-
+            
             for item in FilteredItems {
                 if item.isDone {
                     self.doneItem.append(item)
@@ -791,16 +741,17 @@ extension ListsViewController: UISearchBarDelegate {
                     self.notDoneItem.append(item)
                 }
             }
-
+            
             sections = [tableCat(name: "to do", items: notDoneItem), tableCat(name: "done", items: doneItem)]
-
-            tableview.reloadData()
+            
+            tableView.reloadData()
         }
     }
     
     
 }
 
+//MARK: - hide keyboard extention
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))

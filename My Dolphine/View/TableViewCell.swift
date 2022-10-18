@@ -13,22 +13,17 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var itemQuantity: UILabel!
     @IBOutlet weak var CheckButton: UIButton!
     @IBOutlet weak var categoryLabel: UILabel!
-    
     @IBOutlet weak var infoButton: UIButton!
     
     var infoButtonAction : (() -> ())?
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         infoButton.setTitle("", for: .normal)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
-    
     
     @IBAction func infoButtonClicked(_ sender: Any) {
         infoButtonAction?()

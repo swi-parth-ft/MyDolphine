@@ -14,19 +14,19 @@ protocol selectedCat {
 class SelectCatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     var delegate: selectedCat?
-    @IBOutlet weak var tableView: UITableView!
     var categories: [Categories] = []
+    
+    @IBOutlet weak var tableView: UITableView!
+   
+    //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.systemGray6
-        // Do any additional setup after loading the view.
     }
     
+    //MARK: - viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         let theme = UserDefaults.standard.integer(forKey: "theme")
         
@@ -37,6 +37,7 @@ class SelectCatViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    //MARK: - tableView
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categories.count
     }
@@ -53,8 +54,4 @@ class SelectCatViewController: UIViewController, UITableViewDelegate, UITableVie
         delegate?.setCategory(category: categories[indexPath.row].name!)
         self.dismiss(animated: true)
     }
-
-    
-   
-
 }

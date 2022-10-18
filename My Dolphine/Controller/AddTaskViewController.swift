@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Firebase
 import CoreData
 
 protocol selectedCategories {
@@ -14,40 +13,31 @@ protocol selectedCategories {
 }
 
 class AddTaskViewController: UIViewController, selectedCat, UITextFieldDelegate {
-   
     
     var items = [Items]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    @IBOutlet weak var selectCatButton: UIButton!
     var quantity = 0
     var delegate: selectedCategories?
-    
     var categories: [Categories] = []
     var selectedCategory = ""
     var item: [Task] = []
     
+    @IBOutlet weak var stepperView: UIView!
+    @IBOutlet weak var selectCatButton: UIButton!
     @IBOutlet weak var notes: UITextField!
-    let ref = Database.database().reference(withPath: "items")
-    let usersRef = Database.database().reference(withPath: "online")
+    @IBOutlet weak var stepper: UIStepper!
+    @IBOutlet weak var nameText: UITextField!
+    @IBOutlet weak var quantityText: UITextField!
     
-    var refObservers: [DatabaseHandle] = []
-    var handle: AuthStateDidChangeListenerHandle?
-    
-    var user: User!
     func setCategory(category: String) {
         selectedCategory = category
         selectCatButton.setTitle(selectedCategory, for: .normal)
     }
     
-    @IBOutlet weak var stepper: UIStepper!
-    @IBOutlet weak var nameText: UITextField!
-    @IBOutlet weak var quantityText: UITextField!
-    
+    //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
-    
         nameText.delegate = self
         nameText.tag = 0
         
@@ -73,49 +63,49 @@ class AddTaskViewController: UIViewController, selectedCat, UITextFieldDelegate 
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.sizeToFit()
-        
-        Auth.auth().addStateDidChangeListener { auth, user in
-            guard let user = user else { return }
-            self.user = User(authData: user)
-        
-            let currentUserRef = self.usersRef.child(self.user.uid)
-            currentUserRef.setValue(self.user.email)
-            currentUserRef.onDisconnectRemoveValue()
-        }
-
     }
     
- 
+    //MARK: - viewWillAppear
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        let theme = UserDefaults.standard.integer(forKey: "theme")
+        
+        if theme == 1 {
+            view.backgroundColor = .black
+            stepperView.backgroundColor = .black
+        } else {
+            view.backgroundColor = .systemGray6
+            stepperView.backgroundColor = .systemGray6
+        }
+        
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == nameText {
-               textField.resignFirstResponder()
-               notes.becomeFirstResponder()
-          
-            } else if textField == notes {
-               textField.resignFirstResponder()
-               save()
-            }
-           return true
-          
-       }
-    
-    override func viewDidAppear(_ animated: Bool) {
+            textField.resignFirstResponder()
+            notes.becomeFirstResponder()
+            
+        } else if textField == notes {
+            textField.resignFirstResponder()
+            save()
+        }
+        return true
         
-        print(selectedCategory)
     }
     
-    
+    //MARK: - stepper tapped action
     @IBAction func stepperTapped(_ sender: Any) {
-        quantityText.text = "Quantity: \(Int(stepper.value))"
+        quantityText.text = "\(Int(stepper.value))"
         quantity = Int(stepper.value)
     }
     
+    //MARK: - save clicked
     @IBAction func saveClicked(_ sender: Any) {
-
         save()
     }
     
+    //MARK: - save item function
     func save(){
         var name = nameText.text
         if name == "" {
@@ -125,7 +115,7 @@ class AddTaskViewController: UIViewController, selectedCat, UITextFieldDelegate 
         if selectedCategory == "" {
             selectedCategory = "General"
         }
-            
+        
         var note = notes.text
         if note == "" {
             note = "No note!"
@@ -144,49 +134,32 @@ class AddTaskViewController: UIViewController, selectedCat, UITextFieldDelegate 
     }
     
     func saveItem(){
-       
         do{
-            
             try
-                context.save()
-                print("data saved")
+            context.save()
+            print("data saved")
             
         } catch {
-           print("error saving data")
+            print("error saving data")
         }
     }
-  
-   
     
-    override func viewWillAppear(_ animated: Bool)
-    {
-        super.viewWillAppear(animated)
-        let theme = UserDefaults.standard.integer(forKey: "theme")
-        
-        if theme == 1 {
-            view.backgroundColor = .black
-        } else {
-            view.backgroundColor = .systemGray6
-        }
-        
-    }
-    
+    //MARK: - select cat clicked
     @IBAction func selectCatClicked(_ sender: Any) {
         performSegue(withIdentifier: "selectCat", sender: self)
         
     }
     
+    //MARK: - prepare for
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? SelectCatViewController{
             vc.categories = categories
             vc.delegate = self
         }
-    
     }
-    
-    
 }
 
+//MARK: - UITextField extention
 extension UITextField {
     func setLeftPaddingPoints(_ amount:CGFloat){
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: self.frame.size.height))
