@@ -14,8 +14,8 @@ class GuideViewController: UIPageViewController {
             let firstVC = storyboard.instantiateViewController(identifier: "guide1")
             let secondVC = storyboard.instantiateViewController(identifier: "guide2")
             let thirdVC = storyboard.instantiateViewController(identifier: "guide3")
-              
-            return [firstVC, secondVC, thirdVC]
+            let forthVC = storyboard.instantiateViewController(identifier: "guide4")
+            return [firstVC, secondVC, thirdVC, forthVC]
               
         }()
       

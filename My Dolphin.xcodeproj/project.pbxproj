@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0700A49B28ED18A200C8C8DD /* tableCat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0700A49A28ED18A200C8C8DD /* tableCat.swift */; };
+		07555D2928FE123B005ED063 /* grad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07555D2828FE123B005ED063 /* grad.swift */; };
 		079186FB28EF9AA200ADA03C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079186FA28EF9AA200ADA03C /* SettingsViewController.swift */; };
 		0794C7AB28EB6C20001C81FC /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0794C7AA28EB6C20001C81FC /* EditViewController.swift */; };
 		07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AC05C928E78D12006AD37F /* AppDelegate.swift */; };
@@ -46,6 +47,7 @@
 /* Begin PBXFileReference section */
 		0700A49A28ED18A200C8C8DD /* tableCat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tableCat.swift; sourceTree = "<group>"; };
 		07082F3728F8A9D000FCC7EC /* My Dolphin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "My Dolphin.entitlements"; sourceTree = "<group>"; };
+		07555D2828FE123B005ED063 /* grad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = grad.swift; sourceTree = "<group>"; };
 		079186FA28EF9AA200ADA03C /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		0794C7AA28EB6C20001C81FC /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		07AC05C628E78D12006AD37F /* My Dolphin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Dolphin.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,6 +165,7 @@
 				07DC1A4128E8CFD800B32D43 /* Category.swift */,
 				07DC1A4428EB334E00B32D43 /* User.swift */,
 				0700A49A28ED18A200C8C8DD /* tableCat.swift */,
+				07555D2828FE123B005ED063 /* grad.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 				07AC05CA28E78D12006AD37F /* AppDelegate.swift in Sources */,
 				07D604F528E8850E00AD539D /* SignUpViewController.swift in Sources */,
 				07DC1A4528EB334E00B32D43 /* User.swift in Sources */,
+				07555D2928FE123B005ED063 /* grad.swift in Sources */,
 				07AC05CC28E78D12006AD37F /* SceneDelegate.swift in Sources */,
 				07D11EAA28EF6444006C20CF /* SelectCatViewController.swift in Sources */,
 				07D604F128E79F1C00AD539D /* AddTaskViewController.swift in Sources */,

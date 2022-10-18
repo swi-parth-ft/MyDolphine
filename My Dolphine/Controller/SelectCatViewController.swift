@@ -19,10 +19,22 @@ class SelectCatViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.systemGray6
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        let theme = UserDefaults.standard.integer(forKey: "theme")
+        
+        if theme == 1 {
+            view.backgroundColor = .black
+        } else {
+            view.backgroundColor = .systemGray6
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

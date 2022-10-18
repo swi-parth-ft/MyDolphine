@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import CoreData
 
-class EditViewController: UIViewController, selectedCat {
+class EditViewController: UIViewController, selectedCat, UITextFieldDelegate {
 
     var items = [Items]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -40,6 +40,25 @@ class EditViewController: UIViewController, selectedCat {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+       
+        nameText.delegate = self
+        nameText.tag = 0
+        
+        quantityText.delegate = self
+        quantityText.tag = 1
+        
+        notes.delegate = self
+        notes.tag = 2
+        
+        nameText.layer.cornerRadius = nameText.frame.size.height/4
+        nameText.clipsToBounds = true
+        
+        quantityText.layer.cornerRadius = quantityText.frame.size.height/4
+        quantityText.clipsToBounds = true
+        
+        notes.layer.cornerRadius = notes.frame.size.height/4
+        notes.clipsToBounds = true
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.sizeToFit()
         
@@ -61,6 +80,28 @@ class EditViewController: UIViewController, selectedCat {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        let theme = UserDefaults.standard.integer(forKey: "theme")
+        
+        if theme == 1 {
+            view.backgroundColor = .black
+        } else {
+            view.backgroundColor = .systemGray6
+        }
+        
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == nameText {
+               textField.resignFirstResponder()
+               notes.becomeFirstResponder()
+         
+            } else if textField == notes {
+               textField.resignFirstResponder()
+            }
+           return true
+          
+       }
 
     override func viewDidAppear(_ animated: Bool) {
         print(cats)

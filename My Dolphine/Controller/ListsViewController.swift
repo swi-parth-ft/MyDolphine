@@ -11,12 +11,12 @@ import CoreData
 
 class ListsViewController: UIViewController, selectedCategories, UIGestureRecognizerDelegate {
     
-    
+
     var category = [Categories]()
     var categorySorted = [Categories]()
     var itemc = [Items]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-   
+   var catCardNumber = 0
     @IBOutlet weak var addCatButton: UIButton!
     //arrays for table sections
     var doneItem: [Items] = []
@@ -67,20 +67,32 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
     
     var refreshControl:UIRefreshControl!
 
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+       
+        
         
         let apprence = UserDefaults.standard.integer(forKey: "apperence")
         
         if apprence == 1 {
             let window = UIApplication.shared.keyWindow
             window?.overrideUserInterfaceStyle = .dark
+            self.navigationController?.navigationBar.tintColor = UIColor.white
         } else if apprence == 2 {
             let window = UIApplication.shared.keyWindow
             window?.overrideUserInterfaceStyle = .light
+            self.navigationController?.navigationBar.tintColor = UIColor.black
         } else {
             let window = UIApplication.shared.keyWindow
             window?.overrideUserInterfaceStyle = .unspecified
+            if window?.overrideUserInterfaceStyle == .dark {
+                self.navigationController?.navigationBar.tintColor = UIColor.white
+            } else {
+                self.navigationController?.navigationBar.tintColor = UIColor.black
+            }
         }
         
         
@@ -103,8 +115,8 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         tableview.delegate = self
         tableview.dataSource = self
         tableview.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "ReusableCell")
-        tableview.backgroundColor = UIColor.systemGray6
-        
+    //    tableview.layer.backgroundColor = UIColor.systemGray3.cgColor
+        tableview.layer.cornerRadius=13
         
         
         
@@ -120,7 +132,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         refreshControl.tintColor = UIColor.red
         refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
         
-        let timer = Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
+//        let timer = Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
         tableview.addSubview(refreshControl)
         
     }
@@ -137,15 +149,30 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         //let request: NSFetchRequest<Item> = Item.fetchRequest()
         do {
         category = try context.fetch(request)
-//            if category.isEmpty {
-//                let newCategory = Categories(context: self.context)
-//                newCategory.name = "General"
-//                newCategory.emoji = "🏡"
-//                newCategory.cardNumber = 6
-//                newCategory.counter = 0
-//                self.category.append(newCategory)
-//                self.saveCategory()
-//            }
+            if category.isEmpty {
+                let newCategory = Categories(context: self.context)
+                newCategory.name = "General"
+                newCategory.emoji = "🏡"
+                newCategory.cardNumber = 6
+                newCategory.counter = 0
+                self.category.append(newCategory)
+                self.saveCategory()
+            }
+            var cate: Categories?
+            var count = 0
+            for cat in category {
+                cate = cat
+                if cat.name == "General" {
+                    count += 1
+                }
+            }
+            
+            if count > 1 {
+                deleteCat(cat: cate!)
+                count = 0
+                loadCategory()
+                CategoriesCollection.reloadData()
+            }
             
             categorySorted = category.sorted(by: { $0.name!.lowercased() < $1.name!.lowercased()})
             print(categorySorted)
@@ -199,6 +226,17 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             performSegue(withIdentifier: "toGuide", sender: self)
             UserDefaults.standard.set(1, forKey: "guide")
         }
+        
+        
+        let theme = UserDefaults.standard.integer(forKey: "theme")
+        
+        if theme == 1 {
+            view.backgroundColor = .black
+            CategoriesCollection.backgroundColor = .black
+        } else {
+            view.backgroundColor = .systemGray6
+            CategoriesCollection.backgroundColor = .systemGray6
+        }
     }
 
     func updateCollection() {
@@ -233,6 +271,8 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
         notDoneItem = []
         loadItem()
         tableview.reloadData()
+        CategoriesCollection.reloadData()
+
     }
    
     override func viewDidDisappear(_ animated: Bool) {
@@ -368,6 +408,7 @@ class ListsViewController: UIViewController, selectedCategories, UIGestureRecogn
             vc1.catName = catName
             vc1.catEmoji = catEmoji
             vc1.categories = category
+            vc1.catCardNumber = catCardNumber
         }
         else if let vc2 = segue.destination as? EditViewController {
             let indexPath = tableview.indexPathForSelectedRow
@@ -434,6 +475,7 @@ extension ListsViewController: UITableViewDelegate, UITableViewDataSource{
         //MARK: - Grocery item name and which user added it
         cell.itemName.text = groceryItem.name
         cell.itemQuantity.text = "\(groceryItem.quantity)"
+        
         
         for cats in category{
             
@@ -584,6 +626,7 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
         let cat = categorySorted[indexPath.row]
         catName = cat.name!
         catEmoji = cat.emoji!
+        catCardNumber = Int(cat.cardNumber)
         performSegue(withIdentifier: "categoryItemsVC", sender: self)
     }
     
@@ -648,21 +691,66 @@ extension ListsViewController: UICollectionViewDelegate, UICollectionViewDataSou
             let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil,attributes: .destructive, state: .off) { (_) in
                 
                 let cat = self.categorySorted[index]
-//                if cat.name == "General" {
-//                    let refreshAlert = UIAlertController(title: "Can not Delete", message: "General Category can not be deleted.", preferredStyle: UIAlertController.Style.alert)
-//
-//                        refreshAlert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: { (action: UIAlertAction!) in
-//
-//                               refreshAlert .dismiss(animated: true, completion: nil)
-//                      }))
-//
-//                       self.present(refreshAlert, animated: true, completion: nil)
-//                } else {
-                    self.deleteCat(cat: cat)
-               // }
+                let refreshAlert = UIAlertController(title: "Delete Category with items?", message: "Do you want delete items of \(cat.name ?? "this category") as well?", preferredStyle: UIAlertController.Style.alert)
+
+                refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
+                  
+                    
+                    let refreshAlert = UIAlertController(title: "Delete", message: "Delete \(cat.name ?? "category") with all items?", preferredStyle: UIAlertController.Style.alert)
+
+                    refreshAlert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action: UIAlertAction!) in
+                        
+                        for item in self.itemc {
+                            if item.category == cat.name {
+                                self.deleteItem(item: item)
+                            }
+                        }
+                        self.deleteCat(cat: cat)
+                    }))
+
+                    refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                        print("Handle Cancel Logic here")
+                    }))
+
+                    self.present(refreshAlert, animated: true, completion: nil)
+                }))
+
+                refreshAlert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action: UIAlertAction!) in
+                    
+                    let refreshAlert = UIAlertController(title: "Delete \(cat.name ?? "category")?", message: "All items in \(cat.name ?? "category") will move to General.", preferredStyle: UIAlertController.Style.alert)
+
+                    refreshAlert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action: UIAlertAction!) in
+                        for item in self.itemc {
+                            if item.category == cat.name {
+                                item.category = "General"
+                            }
+                            self.saveItem()
+                        }
+                        self.deleteCat(cat: cat)
+                        self.loadCategory()
+                        self.loadItem()
+                        self.tableview.reloadData()
+                        self.CategoriesCollection.reloadData()
+                    }))
+
+                    refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                        print("Handle Cancel Logic here")
+                    }))
+
+                    self.present(refreshAlert, animated: true, completion: nil)
+                    self.loadCategory()
+                    self.CategoriesCollection.reloadData()
+                }))
+                
+                self.present(refreshAlert, animated: true, completion: nil)
+                self.loadCategory()
+                self.CategoriesCollection.reloadData()
+  
             }
             return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit,delete])
         }
+        self.loadCategory()
+        self.CategoriesCollection.reloadData()
         return context
     }
 

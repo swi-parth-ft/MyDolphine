@@ -13,7 +13,7 @@ protocol selectedCategories {
     func setCategory(category: String)
 }
 
-class AddTaskViewController: UIViewController, selectedCat {
+class AddTaskViewController: UIViewController, selectedCat, UITextFieldDelegate {
    
     
     var items = [Items]()
@@ -47,7 +47,29 @@ class AddTaskViewController: UIViewController, selectedCat {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-     
+    
+        nameText.delegate = self
+        nameText.tag = 0
+        
+        quantityText.delegate = self
+        quantityText.tag = 1
+        
+        notes.delegate = self
+        notes.tag = 2
+        
+        
+        stepper.transform = stepper.transform.scaledBy(x: 1, y: 1.1)
+        
+        nameText.layer.cornerRadius = nameText.frame.size.height/4
+        nameText.clipsToBounds = true
+        
+        quantityText.layer.cornerRadius = quantityText.frame.size.height/4
+        quantityText.clipsToBounds = true
+        
+        notes.layer.cornerRadius = notes.frame.size.height/4
+        notes.clipsToBounds = true
+        
+        selectCatButton.layer.cornerRadius = 5
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.sizeToFit()
@@ -63,6 +85,20 @@ class AddTaskViewController: UIViewController, selectedCat {
 
     }
     
+ 
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == nameText {
+               textField.resignFirstResponder()
+               notes.becomeFirstResponder()
+          
+            } else if textField == notes {
+               textField.resignFirstResponder()
+               save()
+            }
+           return true
+          
+       }
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -77,6 +113,10 @@ class AddTaskViewController: UIViewController, selectedCat {
     
     @IBAction func saveClicked(_ sender: Any) {
 
+        save()
+    }
+    
+    func save(){
         var name = nameText.text
         if name == "" {
             name = "item"
@@ -116,8 +156,19 @@ class AddTaskViewController: UIViewController, selectedCat {
         }
     }
   
-    override func viewWillAppear(_ animated: Bool) {
-        print(selectedCategory)
+   
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        let theme = UserDefaults.standard.integer(forKey: "theme")
+        
+        if theme == 1 {
+            view.backgroundColor = .black
+        } else {
+            view.backgroundColor = .systemGray6
+        }
+        
     }
     
     @IBAction func selectCatClicked(_ sender: Any) {

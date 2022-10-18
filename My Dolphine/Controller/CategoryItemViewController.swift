@@ -11,9 +11,11 @@ import CoreData
 
 class CategoryItemViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    var gradColor = UIColor.systemGray6.cgColor
+    var catCardNumber = 0
     var itemc = [Items]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
+    let grads = [1:UIColor.blue,2:UIColor.orange,3:UIColor.systemPink,4:UIColor.purple,5:UIColor.green,6:UIColor.cyan]
     let addButton = UIButton()
     var categories: [Categories] = []
     //arrays for table sections
@@ -33,6 +35,13 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+                
+        
+        
+        
+        
+        
         // Do any additional setup after loading the view.
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.sizeToFit()
@@ -41,6 +50,7 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.systemGray6
+        tableView.layer.cornerRadius=13
         
         addButton.setTitle("", for: .normal)
         addButton.setImage(UIImage(named: "addToDo"), for: .normal)
@@ -160,6 +170,24 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
         loadItem()
         tableView.reloadData()
        
+        let theme = UserDefaults.standard.integer(forKey: "theme")
+        
+        if theme == 1 {
+            view.backgroundColor = .black
+            gradColor = UIColor.black.cgColor
+        } else {
+            view.backgroundColor = .systemGray6
+            gradColor = UIColor.systemGray6.cgColor
+        }
+        
+        let gradient = CAGradientLayer()
+
+        gradient.frame = view.bounds
+        gradient.colors = [grads[catCardNumber]!.cgColor, gradColor]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 0, y: 0.2)
+        view.layer.insertSublayer(gradient, at: 0)
+
         
     }
 
@@ -224,7 +252,7 @@ class CategoryItemViewController: UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ReusableCell", for: indexPath) as! TableViewCell
-        
+        cell.layer.backgroundColor = UIColor.clear.cgColor
         //MARK: - Each grocery item will fill the table
         let items = self.sections[indexPath.section].items
         let groceryItem = items[indexPath.row]

@@ -51,7 +51,7 @@
                         <buttonConfiguration key="configuration" style="plain" image="UncheckedOrange" title=""/>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7bR-M0-Qz7">
-                        <rect key="frame" x="295" y="10" width="25" height="24"/>
+                        <rect key="frame" x="290" y="10" width="25" height="24"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="24" id="2l2-Qv-Q7u"/>
                             <constraint firstAttribute="width" constant="25" id="LF1-Ma-K7e"/>
@@ -63,7 +63,7 @@
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CzB-hP-Zo5">
-                        <rect key="frame" x="190" y="11" width="97" height="21"/>
+                        <rect key="frame" x="185" y="11" width="97" height="21"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="97" id="7mY-tk-IOf"/>
                         </constraints>
@@ -74,7 +74,6 @@
                 </subviews>
                 <color key="backgroundColor" systemColor="systemGray6Color"/>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="7bR-M0-Qz7" secondAttribute="trailing" id="7TE-y5-bai"/>
                     <constraint firstItem="7bR-M0-Qz7" firstAttribute="leading" secondItem="CzB-hP-Zo5" secondAttribute="trailing" constant="8" id="HMt-RG-Fpw"/>
                     <constraint firstItem="7bR-M0-Qz7" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="PxG-n9-2Gj"/>
                     <constraint firstAttribute="bottom" secondItem="7bR-M0-Qz7" secondAttribute="bottom" constant="12" id="RjC-1j-7iZ"/>
@@ -85,6 +84,7 @@
                     <constraint firstItem="olm-ag-GS9" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="YuW-GX-nKM"/>
                     <constraint firstAttribute="bottom" secondItem="olm-ag-GS9" secondAttribute="bottom" constant="8.6699999999999999" id="fsw-SQ-6sc"/>
                     <constraint firstItem="7ph-aj-zCX" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="11.67" id="hQk-Bm-ogx"/>
+                    <constraint firstAttribute="trailing" secondItem="7bR-M0-Qz7" secondAttribute="trailing" constant="5" id="hrF-4M-3QZ"/>
                     <constraint firstItem="7ph-aj-zCX" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="6" id="rzy-gI-I0U"/>
                 </constraints>
             </tableViewCellContentView>
